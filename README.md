@@ -27,7 +27,7 @@ This is @luke-jr's branch of things upcoming in the main bitcoind.  It currently
 
 These formula require GCC 4.8 which is newer than the compiler that comes with OS X.  Because of this, building these packages takes a while and the formula are a bit more complex.  Hard coding other versions of compilers into a formula like this is not supported by the brew developers, but I don't see any other way.  I'm also not very happy with the CPPFLAGS and LDFLAGS stuff, but it seems to be working.
 
-I have successfully compiled libbitcoin, obelisk, and sx on Mavericks.  I've yet to actually do much testing of them yet, so things might still be broken.
+I have successfully compiled libbitcoin, obelisk, and sx on Mavericks.  I've yet to actually do much testing of them yet, so things might still be broken.  the links to boost seem to be broken.  Doing `brew link --force boost-gcc48` seems to get it working as a quick hack, but is not a good idea, especially if you have the official boost formula installed.
 
 If you have anything that could help make these formula better, please contribute anything you know to the open issues or open a new issue!
 
