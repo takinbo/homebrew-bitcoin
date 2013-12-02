@@ -76,6 +76,6 @@ index 81880f3..aa6d18e 100644
 -Cflags: -I${includedir} -std=c++11 @CFLAG_LEVELDB@
 +Cflags: -I${includedir} @CPPFLAGS@ -std=c++11 @CFLAG_LEVELDB@
 -Libs: -L${libdir} -lbitcoin -lboost_thread -lboost_system -lboost_regex -lboost_filesystem -lpthread -lcurl @LDFLAG_LEVELDB@
-+Libs: -L${libdir} @LDFLAGS@ -lbitcoin -lpthread @LDFLAG_LEVELDB@
++Libs: -L${libdir} @LDFLAGS@ -lbitcoin -lboost_thread -lboost_system -lboost_regex -lboost_filesystem -lpthread -lcurl @LDFLAG_LEVELDB@
  Libs.private: -lcrypto -ldl -lz
  

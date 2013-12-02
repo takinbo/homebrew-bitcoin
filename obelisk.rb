@@ -3,6 +3,7 @@ require 'formula'
 class Obelisk < Formula
   homepage 'https://github.com/spesmilo/obelisk'
   url 'https://github.com/spesmilo/obelisk.git', :tag => 'v0.2'
+  head 'https://github.com/spesmilo/obelisk.git', :branch => 'master'
 
   depends_on 'autoconf' => :build
   depends_on 'automake' => :build

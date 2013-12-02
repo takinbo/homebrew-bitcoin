@@ -3,6 +3,7 @@ require 'formula'
 class Sx < Formula
   homepage 'https://github.com/spesmilo/sx'
   url 'https://github.com/spesmilo/sx.git', :tag => 'v0.2'
+  head 'https://github.com/spesmilo/sx.git', :branch => 'master'
 
   depends_on 'autoconf' => :build
   depends_on 'automake' => :build
@@ -17,6 +18,9 @@ class Sx < Formula
     ENV['CXX'] = ENV['LD'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/g++-4.8"
 
     # todo: very likely need to include some things here
+
+    # this is set in libbitcoin.pc.in
+    ENV.cxx11
 
     system "autoreconf", "-i"
     system "./configure", "--prefix=#{prefix}"
