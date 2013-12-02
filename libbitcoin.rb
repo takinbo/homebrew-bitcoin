@@ -13,19 +13,21 @@ class Libbitcoin < Formula
 
   depends_on 'curl'  # todo: does this need gcc48?
   depends_on 'openssl'  # todo: does this need gcc48?
-  depends_on 'WyseNynja/bitcoin/boost-gcc48'  # => 'c++11'  # todo: not sure about this
+  depends_on 'WyseNynja/bitcoin/boost-gcc48' => 'c++11'
   depends_on 'WyseNynja/bitcoin/leveldb-gcc48'
-  #depends_on 'WyseNynja/bitcoin/protobuf-gcc48'  # mentioned in install docs, but seems unnecessary
+  #depends_on 'WyseNynja/bitcoin/protobuf-gcc48' => 'c++11'  # mentioned in install docs, but seems unnecessary
 
   def patches
-    # lboost_thread is named differently on osx
+    # fixup libs and cflags
+    # using CPPFLAGS and LDFLAGS inside a .pc.in works okay here because brew creates a separate env
     DATA
   end
 
   def install
-    # we depend on gcc48 for build, but the PATH is in the wrong order
+    # we depend_on gcc48 (with -std=c++11), but PATH is in the wrong order so be explicit
     ENV['CC'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/gcc-4.8"
     ENV['CXX'] = ENV['LD'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/g++-4.8"
+    ENV.cxx11
 
     # I thought depends_on boost-gcc48 would be enough, but I guess not...
     boostgcc48 = Formula.factory('WyseNynja/bitcoin/boost-gcc48')
@@ -46,9 +48,6 @@ class Libbitcoin < Formula
     leveldbgcc48 = Formula.factory('WyseNynja/bitcoin/leveldb-gcc48')
     ENV.append 'CPPFLAGS', "-I#{leveldbgcc48.include}"
     ENV.append 'LDFLAGS', "-L#{leveldbgcc48.lib}"
-
-    # this is set in libbitcoin.pc.in
-    ENV.cxx11
 
     system "autoreconf", "-i"
     system "./configure", "--enable-leveldb",
@@ -76,6 +75,6 @@ index 81880f3..aa6d18e 100644
 -Cflags: -I${includedir} -std=c++11 @CFLAG_LEVELDB@
 +Cflags: -I${includedir} @CPPFLAGS@ -std=c++11 @CFLAG_LEVELDB@
 -Libs: -L${libdir} -lbitcoin -lboost_thread -lboost_system -lboost_regex -lboost_filesystem -lpthread -lcurl @LDFLAG_LEVELDB@
-+Libs: -L${libdir} @LDFLAGS@ -lbitcoin -lboost_thread -lboost_system -lboost_regex -lboost_filesystem -lpthread -lcurl @LDFLAG_LEVELDB@
++Libs: -L${libdir} @LDFLAGS@ -lbitcoin -lboost_filesystem -lboost_regex -lboost_system -lboost_thread-mt -lcurl @LDFLAG_LEVELDB@ -lpthread
  Libs.private: -lcrypto -ldl -lz
  

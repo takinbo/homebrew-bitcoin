@@ -60,7 +60,7 @@ class BoostGcc48 < Formula
   end
 
   def install
-    # we depend on gcc48 for build, but the PATH is in the wrong order
+    # we depend on gcc48 for build, but PATH is in the wrong order so be explicit
     ENV['CC'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/gcc-4.8"
     ENV['CXX'] = ENV['LD'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/g++-4.8"
 

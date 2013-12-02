@@ -8,16 +8,15 @@ class LibbitcoinExamples < Formula
   depends_on 'pkg-config' => :build
 
   depends_on 'watch'
-  depends_on 'WyseNynja/bitcoin/boost-gcc48'
+  depends_on 'WyseNynja/bitcoin/boost-gcc48' => 'c++11'
   depends_on 'WyseNynja/bitcoin/leveldb-gcc48'
   depends_on 'WyseNynja/bitcoin/libbitcoin'
 
   def install
-    # we depend on gcc48 for build, but the PATH is in the wrong order
+    # we depend_on gcc48 (with -std=c++11), but PATH is in the wrong order so be explicit
     ENV['CC'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/gcc-4.8"
     ENV['CXX'] = ENV['LD'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/g++-4.8"
-
-    #ENV.cxx11  # this is set in libbitcoin.pc.in
+    ENV.cxx11
 
     cd "examples" do
       system "make"
