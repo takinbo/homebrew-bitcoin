@@ -7,6 +7,8 @@ After tapping, run `brew prune` so that you don't have to prefix formula with 'W
 
 And run `brew update` and `brew doctor` often!
 
+If you find this tap useful, my Bitcoin address is 1NcJr3YyL6qKDPVVhG8ViNADcUhVvn3v9n.
+
 # Formula
 
 ## Armory-QT
@@ -25,11 +27,9 @@ This is @luke-jr's branch of things upcoming in the main bitcoind.  It currently
 
 These formula require GCC 4.8 which is newer than the compiler that comes with OS X.  Because of this, building these packages takes a while and the formula are a bit more complex.  Hard coding other versions of compilers into a formula like this is not supported by the brew developers, but I don't see any other way.  I'm also not very happy with the CPPFLAGS and LDFLAGS stuff, but it seems to be working.
 
-Currently, libbitcoin (and probably obelisk) compile in Mavericks, although both seem to be having some trouble with their libraries.  I'm debugging now and expect to have sx working soon.
+I have successfully compiled libbitcoin, obelisk, and sx on Mavericks.  I've yet to actually do much testing of them yet though, so things might still be broken.
 
 If you have anything that could help make these formula better, please contribute anything you know to the open issues or open a new issue!
-
-Also, libbitcoin.pc is likely not right.  If you know what should be changed there, let me know!
 
 ## Vanitygen
 
