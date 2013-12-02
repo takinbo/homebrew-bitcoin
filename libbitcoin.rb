@@ -18,8 +18,7 @@ class Libbitcoin < Formula
   #depends_on 'WyseNynja/bitcoin/protobuf-gcc48' => 'c++11'  # mentioned in install docs, but seems unnecessary
 
   def patches
-    # fixup libs and cflags
-    # using CPPFLAGS and LDFLAGS inside a .pc.in works okay here because brew creates a separate env
+    # fixup Libs in libbitcoin.pc.in
     DATA
   end
 
@@ -72,9 +71,8 @@ index 81880f3..aa6d18e 100644
 @@ -9,6 +9,6 @@ URL: http://libbitcoin.dyne.org
  Version: @PACKAGE_VERSION@
  Requires: libcurl
--Cflags: -I${includedir} -std=c++11 @CFLAG_LEVELDB@
-+Cflags: -I${includedir} @CPPFLAGS@ -std=c++11 @CFLAG_LEVELDB@
+ Cflags: -I${includedir} -std=c++11 @CFLAG_LEVELDB@
 -Libs: -L${libdir} -lbitcoin -lboost_thread -lboost_system -lboost_regex -lboost_filesystem -lpthread -lcurl @LDFLAG_LEVELDB@
-+Libs: -L${libdir} @LDFLAGS@ -lbitcoin -lboost_filesystem -lboost_regex -lboost_system -lboost_thread-mt -lcurl @LDFLAG_LEVELDB@ -lpthread
++Libs: -L${libdir} -lbitcoin -lboost_filesystem -lboost_regex -lboost_system -lboost_thread-mt -lcurl @LDFLAG_LEVELDB@ -lpthread
  Libs.private: -lcrypto -ldl -lz
  
