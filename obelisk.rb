@@ -17,40 +17,43 @@ class Obelisk < Formula
   depends_on 'WyseNynja/bitcoin/libbitcoin'
   depends_on 'WyseNynja/bitcoin/zeromq2-gcc48'
 
+  #ENV['HOMEBREW_CC'] = 'gcc-4.8'
+  #ENV['HOMEBREW_CXX'] = 'g++-4.8'
+
   def patches
     # fixup Libs in libobelisk.pc.in
     DATA
   end
 
   def install
-    # we depend_on gcc48 (with -std=c++11), but PATH is in the wrong order so be explicit
-    ENV['CC'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/gcc-4.8"
-    ENV['CXX'] = ENV['LD'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/g++-4.8"
+    ENV.prepend_path 'PATH', "#{HOMEBREW_PREFIX}/opt/gcc48/bin"
+    ENV['CC'] = "gcc-4.8"
+    ENV['CXX'] = ENV['LD'] = "g++-4.8"
     ENV.cxx11
-
-    # I thought depends_on libbitcoin would be enough, but I guess not...
-    libbitcoin = Formula.factory('WyseNynja/bitcoin/libbitcoin')
-    ENV.append 'CPPFLAGS', "-I#{libbitcoin.include}"
-    ENV.append 'LDFLAGS', "-L#{libbitcoin.lib}"
 
     # I thought depends_on boost-gcc48 would be enough, but I guess not...
     boostgcc48 = Formula.factory('WyseNynja/bitcoin/boost-gcc48')
-    ENV.append 'CPPFLAGS', "-I#{boostgcc48.include}"
+    ENV.append_to_cflags "-I#{boostgcc48.include}"
     ENV.append 'LDFLAGS', "-L#{boostgcc48.lib}"
+
+    # I thought depends_on libbitcoin would be enough, but I guess not...
+    libbitcoin = Formula.factory('WyseNynja/bitcoin/libbitcoin')
+    ENV.append_to_cflags "-I#{libbitcoin.include}"
+    ENV.append 'LDFLAGS', "-L#{libbitcoin.lib}"
 
     # I thought depends_on libconfig-gcc48 would be enough, but I guess not...
     libconfiggcc48 = Formula.factory('WyseNynja/bitcoin/libconfig-gcc48')
-    ENV.append 'CPPFLAGS', "-I#{libconfiggcc48.include}"
+    ENV.append_to_cflags "-I#{libconfiggcc48.include}"
     ENV.append 'LDFLAGS', "-L#{libconfiggcc48.lib}"
 
     # I thought depends_on leveldb-gcc48 would be enough, but I guess not...
     leveldbgcc48 = Formula.factory('WyseNynja/bitcoin/leveldb-gcc48')
-    ENV.append 'CPPFLAGS', "-I#{leveldbgcc48.include}"
+    ENV.append_to_cflags "-I#{leveldbgcc48.include}"
     ENV.append 'LDFLAGS', "-L#{leveldbgcc48.lib}"
 
     # I thought depends_on zermoq-gcc48 would be enough, but I guess not...
     zeromq2gcc48 = Formula.factory('WyseNynja/bitcoin/zeromq2-gcc48')
-    ENV.append 'CPPFLAGS', "-I#{zeromq2gcc48.include}"
+    ENV.append_to_cflags "-I#{zeromq2gcc48.include}"
     ENV.append 'LDFLAGS', "-L#{zeromq2gcc48.lib}"
 
     system "autoreconf", "-i"
@@ -75,6 +78,7 @@ index 9dac6eb..565d9da 100644
  Description: Obelisk network interface for scalable asynchronous blockchain queries.
  Version: @PACKAGE_VERSION@
  Requires: libzmq libconfig++ libbitcoin
- Cflags: -I${includedir} -std=c++11
+-Cflags: -I${includedir} -std=c++11
++Cflags: -I${includedir} @CFLAGS@ -std=c++11
 -Libs: -L${libdir} -lobelisk
-+Libs: -L${libdir} -lobelisk -lconfig++ -lzmq
++Libs: -L${libdir} @LDFLAGS@ -lobelisk -lconfig++ -lzmq

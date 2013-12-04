@@ -10,10 +10,13 @@ class LeveldbGcc48 < Formula
   depends_on 'homebrew/versions/gcc48' => :build
   depends_on 'snappy' => :build
 
+  #ENV['HOMEBREW_CC'] = 'gcc-4.8'
+  #ENV['HOMEBREW_CXX'] = 'g++-4.8'
+
   def install
-    # we depend on gcc48 for build, but PATH is in the wrong order so be explicit
-    ENV['CC'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/gcc-4.8"
-    ENV['CXX'] = ENV['LD'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/g++-4.8"
+    ENV.prepend_path 'PATH', "#{HOMEBREW_PREFIX}/opt/gcc48/bin"
+    ENV['CC'] = "gcc-4.8"
+    ENV['CXX'] = ENV['LD'] = "g++-4.8"
 
     system "make"
     system "make leveldbutil"

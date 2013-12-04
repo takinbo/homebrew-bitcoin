@@ -7,12 +7,15 @@ class LibconfigGcc48 < Formula
 
   keg_only "Conflicts with libconfig in main repository."
 
+  #ENV['HOMEBREW_CC'] = 'gcc-4.8'
+  #ENV['HOMEBREW_CXX'] = 'g++-4.8'
+
   option :universal
 
   def install
-    # we depend on gcc48 for build, but PATH is in the wrong order so be explicit
-    ENV['CC'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/gcc-4.8"
-    ENV['CXX'] = ENV['LD'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/g++-4.8"
+    ENV.prepend_path 'PATH', "#{HOMEBREW_PREFIX}/opt/gcc48/bin"
+    ENV['CC'] = "gcc-4.8"
+    ENV['CXX'] = ENV['LD'] = "g++-4.8"
 
     ENV.universal_binary if build.universal?
     system "./configure", "--disable-dependency-tracking", "--prefix=#{prefix}"

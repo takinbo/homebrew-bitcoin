@@ -36,6 +36,9 @@ class BoostGcc48 < Formula
   depends_on UniversalPython if build.universal? and build.with? "python"
   depends_on 'homebrew/versions/gcc48' => :build
 
+  #ENV['HOMEBREW_CC'] = 'gcc-4.8'
+  #ENV['HOMEBREW_CXX'] = 'g++-4.8'
+
   if build.with? 'icu'
     if build.cxx11?
       depends_on 'icu4c' => 'c++11'
@@ -60,9 +63,9 @@ class BoostGcc48 < Formula
   end
 
   def install
-    # we depend on gcc48 for build, but PATH is in the wrong order so be explicit
-    ENV['CC'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/gcc-4.8"
-    ENV['CXX'] = ENV['LD'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/g++-4.8"
+    ENV.prepend_path 'PATH', "#{HOMEBREW_PREFIX}/opt/gcc48/bin"
+    ENV['CC'] = "gcc-4.8"
+    ENV['CXX'] = ENV['LD'] = "g++-4.8"
 
     # https://svn.boost.org/trac/boost/ticket/8841
     if build.with? 'mpi' and not build.without? 'single'
@@ -100,13 +103,15 @@ class BoostGcc48 < Formula
     #   /usr/local/lib/libboost_regex-mt.dylib (compatibility version 0.0.0, current version 0.0.0)
     #   /usr/local/lib/libboost_filesystem-mt.dylib (compatibility version 0.0.0, current version 0.0.0)
     #   /usr/local/lib/libboost_system-mt.dylib (compatibility version 0.0.0, current version 0.0.0)
-    inreplace 'tools/build/v2/tools/darwin.jam', '-install_name "', "-install_name \"#{HOMEBREW_PREFIX}/lib/"
+    # todo: is this the right lib? leveldb likely needs something similar
+    inreplace 'tools/build/v2/tools/darwin.jam', '-install_name "', "-install_name \"#{opt_prefix}/lib/"
 
     # boost will try to use cc, even if we'd rather it use, say, gcc-4.2
     inreplace 'tools/build/v2/engine/build.sh', 'BOOST_JAM_CC=cc', "BOOST_JAM_CC=#{ENV.cc}"
     inreplace 'tools/build/v2/engine/build.jam', 'toolset darwin cc', "toolset darwin #{ENV.cc}"
 
     # Force boost to compile using the appropriate GCC version
+    # todo: use the right cxx
     open("user-config.jam", "a") do |file|
       file.write "using darwin : : #{ENV.cxx} ;\n"
       file.write "using mpi ;\n" if build.with? 'mpi'

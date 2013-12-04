@@ -10,6 +10,9 @@ class Zeromq2Gcc48 < Formula
   depends_on 'pkg-config' => :build
   depends_on 'libpgm' if build.include? 'with-pgm'
 
+  #ENV['HOMEBREW_CC'] = 'gcc-4.8'
+  #ENV['HOMEBREW_CXX'] = 'g++-4.8'
+
   env :std if build.universal?
 
   fails_with :llvm do
@@ -54,9 +57,9 @@ class Zeromq2Gcc48 < Formula
   end
 
   def install
-    # we depend on gcc48 for build, but PATH is in the wrong order so be explicit
-    ENV['CC'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/gcc-4.8"
-    ENV['CXX'] = ENV['LD'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/g++-4.8"
+    ENV.prepend_path 'PATH', "#{HOMEBREW_PREFIX}/opt/gcc48/bin"
+    ENV['CC'] = "gcc-4.8"
+    ENV['CXX'] = ENV['LD'] = "g++-4.8"
 
     if build.universal?
       build_fat

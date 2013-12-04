@@ -12,14 +12,17 @@ class ProtobufGcc48 < Formula
 
   depends_on :python => :optional
 
+  #ENV['HOMEBREW_CC'] = 'gcc-4.8'
+  #ENV['HOMEBREW_CXX'] = 'g++-4.8'
+
   fails_with :llvm do
     build 2334
   end
 
   def install
-    # we depend on gcc48 for build, but PATH is in the wrong order so be explicit
-    ENV['CC'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/gcc-4.8"
-    ENV['CXX'] = ENV['LD'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/g++-4.8"
+    ENV.prepend_path 'PATH', "#{HOMEBREW_PREFIX}/opt/gcc48/bin"
+    ENV['CC'] = "gcc-4.8"
+    ENV['CXX'] = ENV['LD'] = "g++-4.8"
 
     # Don't build in debug mode. See:
     # https://github.com/mxcl/homebrew/issues/9279

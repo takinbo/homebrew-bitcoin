@@ -15,7 +15,9 @@ class Libbitcoin < Formula
   depends_on 'openssl'  # todo: does this need gcc48?
   depends_on 'WyseNynja/bitcoin/boost-gcc48' => 'c++11'
   depends_on 'WyseNynja/bitcoin/leveldb-gcc48'
-  #depends_on 'WyseNynja/bitcoin/protobuf-gcc48' => 'c++11'  # mentioned in install docs, but seems unnecessary
+
+  #ENV['HOMEBREW_CC'] = 'gcc-4.8'
+  #ENV['HOMEBREW_CXX'] = 'g++-4.8'
 
   def patches
     # fixup Libs in libbitcoin.pc.in
@@ -23,29 +25,29 @@ class Libbitcoin < Formula
   end
 
   def install
-    # we depend_on gcc48 (with -std=c++11), but PATH is in the wrong order so be explicit
-    ENV['CC'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/gcc-4.8"
-    ENV['CXX'] = ENV['LD'] = "#{HOMEBREW_PREFIX}/opt/gcc48/bin/g++-4.8"
+    ENV.prepend_path 'PATH', "#{HOMEBREW_PREFIX}/opt/gcc48/bin"
+    ENV['CC'] = "gcc-4.8"
+    ENV['CXX'] = ENV['LD'] = "g++-4.8"
     ENV.cxx11
 
     # I thought depends_on boost-gcc48 would be enough, but I guess not...
     boostgcc48 = Formula.factory('WyseNynja/bitcoin/boost-gcc48')
-    ENV.append 'CPPFLAGS', "-I#{boostgcc48.include}"
+    ENV.append_to_cflags "-I#{boostgcc48.include}"
     ENV.append 'LDFLAGS', "-L#{boostgcc48.lib}"
 
-    # I thought depends_on curl would be enough, but I guess not...
+    # I thought PKG_CONFIG_PATH from depends_on curl would be enough, but I guess not...
     curl = Formula.factory('curl')
-    ENV.append 'CPPFLAGS', "-I#{curl.include}"
+    ENV.append_to_cflags "-I#{curl.include}"
     ENV.append 'LDFLAGS', "-L#{curl.lib}"
 
-    # I thought depends_on openssl would be enough, but I guess not...
+    # I thought PKG_CONFIG_PATH from depends_on openssl would be enough, but I guess not...
     openssl = Formula.factory('openssl')
-    ENV.append 'CPPFLAGS', "-I#{openssl.include}"
+    ENV.append_to_cflags "-I#{openssl.include}"
     ENV.append 'LDFLAGS', "-L#{openssl.lib}"
 
     # I thought depends_on leveldb-gcc48 would be enough, but I guess not...
     leveldbgcc48 = Formula.factory('WyseNynja/bitcoin/leveldb-gcc48')
-    ENV.append 'CPPFLAGS', "-I#{leveldbgcc48.include}"
+    ENV.append_to_cflags "-I#{leveldbgcc48.include}"
     ENV.append 'LDFLAGS', "-L#{leveldbgcc48.lib}"
 
     system "autoreconf", "-i"
@@ -70,9 +72,11 @@ index 81880f3..aa6d18e 100644
 +++ b/libbitcoin.pc.in
 @@ -9,6 +9,6 @@ URL: http://libbitcoin.dyne.org
  Version: @PACKAGE_VERSION@
- Requires: libcurl
- Cflags: -I${includedir} -std=c++11 @CFLAG_LEVELDB@
+-Requires: libcurl
++Requires: libcurl, openssl
+-Cflags: -I${includedir} -std=c++11 @CFLAG_LEVELDB@
++Cflags: -I${includedir} @CFLAGS@ -std=c++11 @CFLAG_LEVELDB@
 -Libs: -L${libdir} -lbitcoin -lboost_thread -lboost_system -lboost_regex -lboost_filesystem -lpthread -lcurl @LDFLAG_LEVELDB@
-+Libs: -L${libdir} -lbitcoin -lboost_filesystem -lboost_regex -lboost_system -lboost_thread-mt -lcurl @LDFLAG_LEVELDB@ -lpthread
++Libs: -L${libdir} @LDFLAGS@ -lbitcoin -lboost_filesystem -lboost_regex -lboost_system -lboost_thread-mt @LDFLAG_LEVELDB@ -lpthread
  Libs.private: -lcrypto -ldl -lz
  
