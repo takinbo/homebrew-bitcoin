@@ -36,9 +36,6 @@ class BoostGcc48 < Formula
   depends_on UniversalPython if build.universal? and build.with? "python"
   depends_on 'homebrew/versions/gcc48' => :build
 
-  #ENV['HOMEBREW_CC'] = 'gcc-4.8'
-  #ENV['HOMEBREW_CXX'] = 'g++-4.8'
-
   if build.with? 'icu'
     if build.cxx11?
       depends_on 'icu4c' => 'c++11'
@@ -103,10 +100,10 @@ class BoostGcc48 < Formula
     #   /usr/local/lib/libboost_regex-mt.dylib (compatibility version 0.0.0, current version 0.0.0)
     #   /usr/local/lib/libboost_filesystem-mt.dylib (compatibility version 0.0.0, current version 0.0.0)
     #   /usr/local/lib/libboost_system-mt.dylib (compatibility version 0.0.0, current version 0.0.0)
-    # todo: is this the right lib? leveldb likely needs something similar
+    # todo: is this right? leveldb likely needs something similar
     inreplace 'tools/build/v2/tools/darwin.jam', '-install_name "', "-install_name \"#{opt_prefix}/lib/"
 
-    # boost will try to use cc, even if we'd rather it use, say, gcc-4.2
+    # boost will try to use cc, even if we'd rather it use, say, gcc-4.8
     inreplace 'tools/build/v2/engine/build.sh', 'BOOST_JAM_CC=cc', "BOOST_JAM_CC=#{ENV.cc}"
     inreplace 'tools/build/v2/engine/build.jam', 'toolset darwin cc', "toolset darwin #{ENV.cc}"
 

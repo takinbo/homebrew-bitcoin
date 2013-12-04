@@ -3,25 +3,27 @@ require 'formula'
 class Libbitcoin < Formula
   homepage 'https://github.com/spesmilo/libbitcoin'
   url 'https://github.com/spesmilo/libbitcoin.git', :tag => 'v1.4'
-  head 'https://github.com/spesmilo/libbitcoin.git', :branch => 'master'
+  head 'https://github.com/spesmilo/libbitcoin.git', :tag => 'master'
 
   depends_on 'autoconf' => :build
   depends_on 'automake' => :build
   depends_on 'homebrew/versions/gcc48' => :build
-  depends_on 'libtool' => :build
   depends_on 'pkg-config' => :build
 
-  depends_on 'curl'  # todo: does this need gcc48?
-  depends_on 'openssl'  # todo: does this need gcc48?
+  depends_on 'curl'  # todo: should this use gcc48?
+  depends_on 'openssl'  # todo: should this use gcc48?
   depends_on 'WyseNynja/bitcoin/boost-gcc48' => 'c++11'
-  depends_on 'WyseNynja/bitcoin/leveldb-gcc48'
+  depends_on 'WyseNynja/bitcoin/leveldb-gcc48'  # todo: make this optional
 
-  #ENV['HOMEBREW_CC'] = 'gcc-4.8'
-  #ENV['HOMEBREW_CXX'] = 'g++-4.8'
+  # todo: --enable-testnet option
+  # todo: --enable-debug option
 
   def patches
-    # fixup Libs in libbitcoin.pc.in
-    DATA
+    unless build.head?
+      # fix include and lib paths for berkeley-db4 and openssl in the .pc
+      # i'm not sure if this is the right way to do this, but it works
+      DATA
+    end
   end
 
   def install
@@ -32,26 +34,35 @@ class Libbitcoin < Formula
 
     # I thought depends_on boost-gcc48 would be enough, but I guess not...
     boostgcc48 = Formula.factory('WyseNynja/bitcoin/boost-gcc48')
-    ENV.append_to_cflags "-I#{boostgcc48.include}"
+    ENV.append 'CPPFLAGS', "-I#{boostgcc48.include}"
     ENV.append 'LDFLAGS', "-L#{boostgcc48.lib}"
 
-    # I thought PKG_CONFIG_PATH from depends_on curl would be enough, but I guess not...
+    # trickery to get this into the .pc.  what is the right way to do this?
+    ENV.append 'EXTRA_CFLAGS', "-I#{boostgcc48.include}"
+    ENV.append 'EXTRA_LDFLAGS', "-L#{boostgcc48.lib}"
+
+    # I thought depends_on curl would be enough, but I guess not...
     curl = Formula.factory('curl')
-    ENV.append_to_cflags "-I#{curl.include}"
+    ENV.append 'CPPFLAGS', "-I#{curl.include}"
     ENV.append 'LDFLAGS', "-L#{curl.lib}"
 
-    # I thought PKG_CONFIG_PATH from depends_on openssl would be enough, but I guess not...
+    # I thought depends_on openssl would be enough, but I guess not...
     openssl = Formula.factory('openssl')
-    ENV.append_to_cflags "-I#{openssl.include}"
+    ENV.append 'CPPFLAGS', "-I#{openssl.include}"
     ENV.append 'LDFLAGS', "-L#{openssl.lib}"
 
     # I thought depends_on leveldb-gcc48 would be enough, but I guess not...
     leveldbgcc48 = Formula.factory('WyseNynja/bitcoin/leveldb-gcc48')
-    ENV.append_to_cflags "-I#{leveldbgcc48.include}"
+    ENV.append 'CPPFLAGS', "-I#{leveldbgcc48.include}"
     ENV.append 'LDFLAGS', "-L#{leveldbgcc48.lib}"
+
+    # trickery to get this into the .pc.  what is the right way to do this?
+    ENV.append 'EXTRA_CFLAGS', "-I#{leveldbgcc48.include}"
+    ENV.append 'EXTRA_LDFLAGS', "-L#{leveldbgcc48.lib}"
 
     system "autoreconf", "-i"
     system "./configure", "--enable-leveldb",
+                          "--disable-dependency-tracking",
                           "--prefix=#{prefix}"
     system "make"
     system "make", "install"
@@ -66,17 +77,33 @@ class Libbitcoin < Formula
 end
 
 __END__
+diff --git a/configure.ac b/configure.ac
+index 5ad6e6d..c07566f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -64,6 +64,9 @@ AC_ARG_WITH([pkgconfigdir], AS_HELP_STRING([--with-pkgconfigdir=PATH],
+     [pkgconfigdir="$withval"], [pkgconfigdir='${libdir}/pkgconfig'])
+ AC_SUBST([pkgconfigdir])
+ 
++AC_SUBST(EXTRA_CFLAGS)
++AC_SUBST(EXTRA_LDFLAGS)
++
+ AC_CONFIG_FILES([Makefile include/bitcoin/Makefile src/Makefile libbitcoin.pc])
+ AC_OUTPUT
+ 
 diff --git a/libbitcoin.pc.in b/libbitcoin.pc.in
-index 81880f3..aa6d18e 100644
+index 81880f3..dbb9961 100644
 --- a/libbitcoin.pc.in
 +++ b/libbitcoin.pc.in
-@@ -9,6 +9,6 @@ URL: http://libbitcoin.dyne.org
+@@ -7,8 +7,6 @@ Name: libbitcoin
+ Description:  Rewrite bitcoin, make it super-pluggable, very easy to do and hack everything at every level, and very configurable.
+ URL: http://libbitcoin.dyne.org
  Version: @PACKAGE_VERSION@
 -Requires: libcurl
-+Requires: libcurl, openssl
 -Cflags: -I${includedir} -std=c++11 @CFLAG_LEVELDB@
-+Cflags: -I${includedir} @CFLAGS@ -std=c++11 @CFLAG_LEVELDB@
 -Libs: -L${libdir} -lbitcoin -lboost_thread -lboost_system -lboost_regex -lboost_filesystem -lpthread -lcurl @LDFLAG_LEVELDB@
-+Libs: -L${libdir} @LDFLAGS@ -lbitcoin -lboost_filesystem -lboost_regex -lboost_system -lboost_thread-mt @LDFLAG_LEVELDB@ -lpthread
- Libs.private: -lcrypto -ldl -lz
- 
+-Libs.private: -lcrypto -ldl -lz
+-
++Requires: libcurl, openssl
++Cflags: -I${includedir} @EXTRA_CFLAGS@ -std=c++11 @CFLAG_LEVELDB@
++Libs: -L${libdir} @EXTRA_LDFLAGS@ -lbitcoin -lboost_filesystem -lboost_regex -lboost_system -lboost_thread-mt @LDFLAG_LEVELDB@ -lpthread

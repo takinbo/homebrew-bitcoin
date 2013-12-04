@@ -7,9 +7,6 @@ class LibconfigGcc48 < Formula
 
   keg_only "Conflicts with libconfig in main repository."
 
-  #ENV['HOMEBREW_CC'] = 'gcc-4.8'
-  #ENV['HOMEBREW_CXX'] = 'g++-4.8'
-
   option :universal
 
   def install

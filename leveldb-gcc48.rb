@@ -10,9 +10,6 @@ class LeveldbGcc48 < Formula
   depends_on 'homebrew/versions/gcc48' => :build
   depends_on 'snappy' => :build
 
-  #ENV['HOMEBREW_CC'] = 'gcc-4.8'
-  #ENV['HOMEBREW_CXX'] = 'g++-4.8'
-
   def install
     ENV.prepend_path 'PATH', "#{HOMEBREW_PREFIX}/opt/gcc48/bin"
     ENV['CC'] = "gcc-4.8"
