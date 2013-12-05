@@ -17,7 +17,7 @@ class Libbitcoin < Formula
   depends_on 'WyseNynja/bitcoin/leveldb-gcc48'  # todo: make this optional
 
   option 'enable-testnet', "Enable testnet"
-  # todo: --enable-debug option
+  option 'enable-debug', "Enable debug"
 
   def patches
     unless build.head?
@@ -60,11 +60,12 @@ class Libbitcoin < Formula
     # trickery to get this into the .pc.  what is the right way to do this?
     ENV.append 'EXTRA_CFLAGS', "-I#{leveldbgcc48.include}"
     ENV.append 'EXTRA_LDFLAGS', "-L#{leveldbgcc48.lib}"
-    
+
     args = ["--enable-leveldb",
             "--disable-dependency-tracking",
             "--prefix=#{prefix}"]
     args << "--enable-testnet" if build.include? 'enable-testnet'
+    args << "--enable-debug" if build.include? 'enable-debug'
 
     system "autoreconf", "-i"
     system "./configure", *args
