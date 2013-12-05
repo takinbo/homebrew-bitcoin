@@ -21,7 +21,7 @@ class Libbitcoin < Formula
 
   def patches
     unless build.head?
-      # fix include and lib paths for berkeley-db4 and openssl in the .pc
+      # fix include and lib paths for berkeley-db4 and leveldb in the .pc
       # i'm not sure if this is the right way to do this, but it works
       DATA
     end
