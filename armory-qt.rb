@@ -2,21 +2,28 @@ require 'formula'
 
 class ArmoryQt < Formula
   homepage 'http://bitcoinarmory.com/'
-  head 'https://github.com/etotheipi/BitcoinArmory.git'
   url 'https://github.com/etotheipi/BitcoinArmory.git', :tag => 'v0.88-beta'
   version '0.88-beta'
 
   devel do
-    url 'https://github.com/etotheipi/BitcoinArmory.git', :branch => 'testing'
-    version 'testing'
+    url 'https://github.com/etotheipi/BitcoinArmory.git', :branch => '0.91-dev'
+    version '0.91-dev'
   end
 
+  option 'codesign-app', 'Codesign ArmoryQt.app (untested)'
+  option 'with-app', 'Build ArmoryQt.app (untested)'
+
   depends_on 'cryptopp'
-  depends_on 'swig' => :build
-  depends_on 'sip'
-  depends_on 'qt'
+  depends_on 'libpng'
+  depends_on 'psutil' => :python if build.without? 'app'
   depends_on 'pyqt'
-  depends_on 'twisted' => :python
+  depends_on :python
+  depends_on 'sip'
+  depends_on 'swig'
+  depends_on 'twisted' => :python if build.without? 'app'
+  depends_on :xcode if build.include? 'codesign-app'
+
+  # brew uses it's own PATH during installs, so a custom installed gpg (like from GPGTools) won't be found
   depends_on 'gpg' => :recommended
 
   def patches
@@ -24,7 +31,7 @@ class ArmoryQt < Formula
   end
 
   def install
-    if not build.devel? and not build.head? and not build.include? 'without-gpg'
+    if not build.devel? and not build.head? and not build.without? 'gpg'
       cd "#{cached_download}" do
         # prefix version with a "v" to match tags
         system "git verify-tag v#{version}"
@@ -32,23 +39,50 @@ class ArmoryQt < Formula
     end
 
     ENV.j1  # if your formula's build system can't parallelize
-    system "make"
-    system "mkdir -p #{share}/armory/"
-    system "cp *.py *.so README LICENSE #{share}/armory/"
-    bin.install 'ArmoryQt.command'
+
+    if build.with? 'app'
+      system "make osx"
+      cd "osxbuild" do
+        prefix.install "Armory.app"
+      end
+    else
+      system "make"
+      # todo: these directories change with v0.90
+      system "mkdir -p #{share}/armory/img"
+      system "mkdir -p #{share}/armory/extras"
+      system "mkdir -p #{share}/armory/jsonrpc"
+      system "cp *.py *.so README LICENSE #{share}/armory/"
+      system "cp img/* #{share}/armory/img"
+      system "cp extras/*.py #{share}/armory/extras"
+      system "cp jsonrpc/*.py #{share}/armory/jsonrpc"
+      bin.install 'ArmoryQt.command'
+    end
   end
 
-  def caveats; <<-EOS.undent
-    ArmoryQt.command was installed in
-      #{bin}
+  def caveats
+    if build.with? 'app'
+      <<-EOS
+      ArmoryQt.app was installed in:
+        #{prefix}
 
-    To symlink into ~/Applications, you can do:
-      ln -s #{bin}/ArmoryQt.command ~/Applications/ArmoryQt
+      To symlink into ~/Applications, you can do:
+        brew linkapps
 
-    Or you can just run 'ArmoryQt.command' from your terminal
+      You will need bitcoin-qt or bitcoind running if you want to go online.
+      EOS
+    else
+      <<-EOS.undent
+      ArmoryQt.command was installed in
+        #{bin}
 
-    You will need bitcoin-qt or bitcoind running if you want to go online.
-    EOS
+      To symlink into ~/Applications, you can do:
+        ln -s #{bin}/ArmoryQt.command ~/Applications/ArmoryQt
+
+      Or you can just run 'ArmoryQt.command' from your terminal
+
+      You will need bitcoin-qt or bitcoind running if you want to go online.
+      EOS
+    end
   end
 end
 
@@ -62,3 +96,37 @@ index 0000000..2cc2154
 +#!/bin/sh
 +PYTHONPATH=`brew --prefix`/lib/python2.7/site-packages /usr/bin/python `brew --prefix`/share/armory/ArmoryQt.py $@
 +
+diff --git a/osxbuild/deploy.sh b/osxbuild/deploy.sh
+index de3e31b..b2ea5d4 100755
+--- a/osxbuild/deploy.sh
++++ b/osxbuild/deploy.sh
+@@ -10,19 +10,10 @@ function clean()
+     sudo rm -rf Armory.app env
+ }
+ 
+-function get_dependencies()
+-{
+-    # get build dependencies
+-    echo "Installing dependencies..."
+-    brew install cryptopp swig qt pyqt wget
+-    sudo pip install virtualenv 
+-    sudo pip install psutil
+-}
+-
+ function make_env()
+ {
+     echo "Making python environment..."
+-    virtualenv -q env
++    virtualenv -p /usr/bin/python -q env
+     cd env
+     bin/pip install twisted >/dev/null
+     bin/pip install psutil 
+@@ -86,8 +77,6 @@ function finish()
+ 
+ cd "${0%/*}"
+ 
+-get_dependencies
+-
+ if [ ! -d env ];
+ then
+     make_env
