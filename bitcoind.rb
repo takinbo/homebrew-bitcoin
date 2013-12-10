@@ -3,8 +3,8 @@ require 'formula'
 class Bitcoind < Formula
   homepage 'http://bitcoin.org/'
   head 'https://github.com/bitcoin/bitcoin.git'
-  url 'https://github.com/bitcoin/bitcoin.git', :tag => 'v0.8.5'
-  version '0.8.5-brew1'
+  url 'https://github.com/bitcoin/bitcoin.git', :tag => 'v0.8.6'
+  version '0.8.6'
 
   head do
     url 'https://github.com/bitcoin/bitcoin.git', :branch => 'master'
