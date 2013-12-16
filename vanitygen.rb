@@ -17,12 +17,23 @@ class Vanitygen < Formula
       'keyconv',
       'vanitygen',
     ]
-    binaries << 'oclvanitygen' if build.with? 'ocl'
-    binaries << 'oclvanityminer' if build.with? 'ocl'
+
+    if build.with? 'ocl'
+      binaries << 'oclvanitygen'
+      binaries << 'oclvanityminer'
+    end
 
     binaries.each do |binary|
       system "make", binary
       bin.install binary
     end
+
+    # we need these for ocl to work
+    include.install Dir['*.cl']
+  end
+
+  def caveats; <<-EOS.undent
+    You must run oclvanitygen and oclvanityminer from #{opt_prefix}/include
+    EOS
   end
 end
