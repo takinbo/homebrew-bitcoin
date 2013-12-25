@@ -20,14 +20,21 @@ class Bitcoind < Formula
   depends_on 'miniupnpc' if build.include? 'with-upnp'
   depends_on 'openssl'
 
+  option 'with-coinpunk', 'Compile with patches for coinpunk'
   option 'with-upnp', 'Compile with UPnP support'
   option 'without-ipv6', 'Compile without IPv6 support'
 
   def patches
+    ps = []
     unless build.head?
       # fix include and lib paths for berkeley-db4 and openssl
-      DATA
+      ps << 'https://gist.github.com/WyseNynja/8120972/raw/a27bb93507f741c4f31f82514769c333a8243c1a/bdb4+and+openssl+paths+for+old+osx'
     end
+    if build.with? 'coinpunk'
+      # merge patch equivalent of https://github.com/bitcoin/bitcoin/pull/3383
+      ps << 'https://gist.github.com/WyseNynja/8120948/raw/f651429ca271b781dc4083d88f0a351e3f2c0688/patch+for+coinpunk'
+    end
+    ps
   end
 
   def install
@@ -71,62 +78,27 @@ class Bitcoind < Formula
     EOS
   end
 
-  def caveats; <<-EOS.undent
-    You will need to setup your bitcoin.conf if you haven't already done so:
+  def caveats
+    cs = [<<-EOS.undent
+      You will need to setup your bitcoin.conf if you haven't already done so:
 
-    echo -e "rpcuser=bitcoinrpc\\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
-    chmod 600 ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
+      echo -e "rpcuser=bitcoinrpc\\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
+      chmod 600 ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
 
-    Use `bitcoind stop` to stop bitcoind if necessary! `brew services stop bitcoind` does not work!
-    EOS
+      Use `bitcoind stop` to stop bitcoind if necessary! `brew services stop bitcoind` does not work!
+      EOS
+    ]
+
+    if build.with? 'coinpunk'
+      cs << <<-EOS.undent
+        You will also need to add a couple more options for coinpunk.
+
+        echo -e "txindex=1\\ntestnet=1" >> ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
+      EOS
+    end
+
+    cs
   end
 end
+
 __END__
-diff --git a/src/makefile.osx b/src/makefile.osx
-index 50279fd..6ab92b1 100644
---- a/src/makefile.osx
-+++ b/src/makefile.osx
-@@ -7,18 +7,22 @@
- # Originally by Laszlo Hanyecz (solar@heliacal.net)
- 
- CXX=llvm-g++
- DEPSDIR=/opt/local
-+DB4DIR=$(DEPSDIR)/opt/berkeley-db4
-+OPENSSLDIR=$(DEPSDIR)/opt/openssl
- 
- INCLUDEPATHS= \
-  -I"$(CURDIR)" \
-- -I"$(CURDIR)"/obj \
-+ -I"$(CURDIR)/obj" \
-  -I"$(DEPSDIR)/include" \
-- -I"$(DEPSDIR)/include/db48"
-+ -I"$(DB4DIR)/include" \
-+ -I"$(OPENSSLDIR)/include"
- 
- LIBPATHS= \
-  -L"$(DEPSDIR)/lib" \
-- -L"$(DEPSDIR)/lib/db48"
-+ -L"$(DB4DIR)/lib" \
-+ -L"$(OPENSSLDIR)/lib"
- 
- USE_UPNP:=1
- USE_IPV6:=1
- 
-@@ -31,13 +35,13 @@ ifdef STATIC
- TESTLIBS += \
-  $(DEPSDIR)/lib/libboost_unit_test_framework-mt.a
- LIBS += \
-- $(DEPSDIR)/lib/db48/libdb_cxx-4.8.a \
-+ $(DB4DIR)/lib/libdb_cxx-4.8.a \
-  $(DEPSDIR)/lib/libboost_system-mt.a \
-  $(DEPSDIR)/lib/libboost_filesystem-mt.a \
-  $(DEPSDIR)/lib/libboost_program_options-mt.a \
-  $(DEPSDIR)/lib/libboost_thread-mt.a \
-  $(DEPSDIR)/lib/libboost_chrono-mt.a \
-- $(DEPSDIR)/lib/libssl.a \
-- $(DEPSDIR)/lib/libcrypto.a \
-+ $(OPENSSLDIR)/lib/libssl.a \
-+ $(OPENSSLDIR)/lib/libcrypto.a \
-  -lz
- else
- TESTLIBS += \
