@@ -4,7 +4,7 @@ These brews can be installed via the raw GitHub URLs, or by cloning this reposit
 
 Remember to run `brew update`, `brew prune`, and `brew doctor` often!
 
-If you want something added to this repo, let me know with the issue tracker.  It should be easy enough to add things as long as they have build instructions of mac already.  There are other taps with mining tools, but I could add those here if there is interest.
+If you want something added to this repo, let me know with the issue tracker.  It should be easy enough to add things as long as they have build instructions for mac.  There are other taps with mining tools, but I could add those here if there is interest.
 
 If you know anything that could help make these formula better or if anything doesn't work for you, please contribute to the issue tracker here!
 
