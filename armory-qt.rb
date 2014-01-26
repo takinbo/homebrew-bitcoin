@@ -15,12 +15,12 @@ class ArmoryQt < Formula
 
   depends_on 'cryptopp'
   depends_on 'libpng'
-  depends_on 'psutil' => :python if build.without? 'app'
+  depends_on :python => 'psutil' if build.without? 'app'
   depends_on 'pyqt'
   depends_on :python
   depends_on 'sip'
   depends_on 'swig'
-  depends_on 'twisted' => :python if build.without? 'app'
+  depends_on :python => 'twisted' if build.without? 'app'
   depends_on :xcode if build.include? 'codesign-app'
 
   # brew uses it's own PATH during installs, so a custom installed gpg (like from GPGTools) won't be found
@@ -97,22 +97,18 @@ index 0000000..2cc2154
 +PYTHONPATH=`brew --prefix`/lib/python2.7/site-packages /usr/bin/python `brew --prefix`/share/armory/ArmoryQt.py $@
 +
 diff --git a/osxbuild/deploy.sh b/osxbuild/deploy.sh
-index de3e31b..b2ea5d4 100755
+index de3e31b..11b6975 100755
 --- a/osxbuild/deploy.sh
 +++ b/osxbuild/deploy.sh
-@@ -10,19 +10,10 @@ function clean()
-     sudo rm -rf Armory.app env
- }
- 
--function get_dependencies()
--{
--    # get build dependencies
--    echo "Installing dependencies..."
+@@ -14,15 +14,12 @@ function get_dependencies()
+ {
+     # get build dependencies
+     echo "Installing dependencies..."
 -    brew install cryptopp swig qt pyqt wget
 -    sudo pip install virtualenv 
 -    sudo pip install psutil
--}
--
+ }
+ 
  function make_env()
  {
      echo "Making python environment..."
@@ -121,12 +117,3 @@ index de3e31b..b2ea5d4 100755
      cd env
      bin/pip install twisted >/dev/null
      bin/pip install psutil 
-@@ -86,8 +77,6 @@ function finish()
- 
- cd "${0%/*}"
- 
--get_dependencies
--
- if [ ! -d env ];
- then
-     make_env
