@@ -3,8 +3,8 @@ require 'formula'
 class Vanitygen < Formula
   homepage 'http://github.com/WyseNynja/vanitygen'
   head 'https://github.com/WyseNynja/vanitygen.git'
-  url 'https://github.com/WyseNynja/vanitygen.git', :tag => '0.23-red'
-  version '0.23-red'
+  url 'https://github.com/WyseNynja/vanitygen.git', :ref => 'd3d06f986b1ed03cbd40f337e11335df3b004933'
+  version '0.23.1-red'
 
   option 'without-ocl', "Don't build oclvanitygen or oclvanityminer"
 
