@@ -2,8 +2,8 @@ require 'formula'
 
 class ArmoryQt < Formula
   homepage 'http://bitcoinarmory.com/'
-  url 'https://github.com/etotheipi/BitcoinArmory.git', :tag => 'v0.88-beta'
-  version '0.88-beta'
+  url 'https://github.com/etotheipi/BitcoinArmory.git', :tag => 'v0.90-beta'
+  version '0.90-beta'
 
   devel do
     url 'https://github.com/etotheipi/BitcoinArmory.git', :branch => '0.91-dev'
@@ -51,10 +51,12 @@ class ArmoryQt < Formula
       system "mkdir -p #{share}/armory/img"
       system "mkdir -p #{share}/armory/extras"
       system "mkdir -p #{share}/armory/jsonrpc"
+      system "mkdir -p #{share}/armory/dialogs"
       system "cp *.py *.so README LICENSE #{share}/armory/"
       system "cp img/* #{share}/armory/img"
       system "cp extras/*.py #{share}/armory/extras"
       system "cp jsonrpc/*.py #{share}/armory/jsonrpc"
+      system "cp dialogs/*.py #{share}/armory/dialogs"
       bin.install 'ArmoryQt.command'
     end
   end
@@ -117,3 +119,22 @@ index de3e31b..11b6975 100755
      cd env
      bin/pip install twisted >/dev/null
      bin/pip install psutil 
+diff --git a/cppForSwig/Makefile b/cppForSwig/Makefile
+index ba6cc45..45b2e7e 100755
+--- a/cppForSwig/Makefile
++++ b/cppForSwig/Makefile
+@@ -17,9 +17,12 @@ OBJS = UniversalTimer.o BinaryData.o leveldb_wrapper.o StoredBlockObj.o BtcUtils
+ # pypaths.txt to define those three variables, and then comment out
+ # DO_EXEC_WHEREISPY line (to prevent the script from attempting to run
+ # and overwriting the manual values).
+-DO_EXEC_WHEREISPY := $(shell ./whereispy.sh)
++# DO_EXEC_WHEREISPY := $(shell ./whereispy.sh)
+
+-include ./pypaths.txt
++# include ./pypaths.txt
++PYTHON_INCLUDE=/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/include/python2.7/
++PYVER=python2.7
++PYTHON_LIB=/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config/libpython2.7.a
+
+ INCLUDE_OPTS += -Icryptopp -Ileveldb/include -DUSE_CRYPTOPP -D__STDC_LIMIT_MACROS
+ LIBRARY_OPTS += -lpthread -Lleveldb -L$(PYTHON_LIB) -l$(PYVER)
