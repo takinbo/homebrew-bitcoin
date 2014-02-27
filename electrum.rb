@@ -5,8 +5,9 @@ class Electrum < Formula
   url 'https://github.com/spesmilo/electrum.git', :tag => '1.9.7'
   head 'https://github.com/spesmilo/electrum.git', :tag => 'master'
 
-  depends_on :python => 'ecdsa'
-  depends_on :python => 'slowaes'
+  depends_on 'ecdsa' => :python
+  depends_on 'pycurl' => :python
+  #depends_on 'slowaes' => :python  # must be installed with pip install --pre slowaes
   depends_on 'qt'
   depends_on 'pyqt'
   depends_on 'gettext'
@@ -19,6 +20,10 @@ class Electrum < Formula
 
   test do
 	system "false"
+  end
+
+  def caveats
+    "You must also run `pip install --pre slowaes`"
   end
 
 end
