@@ -2,7 +2,7 @@ require 'formula'
 
 class Libbitcoin < Formula
   homepage 'https://github.com/spesmilo/libbitcoin'
-  url 'https://github.com/spesmilo/libbitcoin.git', :tag => 'v1.4'
+  url 'https://github.com/spesmilo/libbitcoin.git', :tag => 'v2.0'
   head 'https://github.com/spesmilo/libbitcoin.git', :tag => 'master'
 
   depends_on 'autoconf' => :build
@@ -112,3 +112,17 @@ index 81880f3..dbb9961 100644
 +Requires: libcurl, openssl
 +Cflags: -I${includedir} @EXTRA_CFLAGS@ -std=c++11 @CFLAG_LEVELDB@
 +Libs: -L${libdir} @EXTRA_LDFLAGS@ -lbitcoin -lboost_filesystem -lboost_regex -lboost_system -lboost_thread-mt @LDFLAG_LEVELDB@ -lpthread
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 754d2f2..798d3e8 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -44,6 +44,7 @@ libbitcoin_la_SOURCES += \
+ endif
+ 
+ libbitcoin_la_LIBADD = \
+-    -lboost_thread -lboost_system -lboost_regex -lboost_filesystem -lpthread \
++    -lboost_thread-mt -lboost_system -lboost_regex -lboost_filesystem \
++    -lpthread \
+     -lcurl @LDFLAG_LEVELDB@ -lcrypto -ldl -lz
+

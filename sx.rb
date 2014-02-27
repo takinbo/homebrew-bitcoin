@@ -2,7 +2,7 @@ require 'formula'
 
 class Sx < Formula
   homepage 'https://github.com/spesmilo/sx'
-  url 'https://github.com/spesmilo/sx.git', :tag => 'v0.2'
+  url 'https://github.com/spesmilo/sx.git', :tag => 'v1.0'
   head 'https://github.com/spesmilo/sx.git', :branch => 'master'
 
   depends_on 'autoconf' => :build
@@ -12,6 +12,7 @@ class Sx < Formula
 
   depends_on 'qrencode' => :recommended
   depends_on 'WyseNynja/bitcoin/boost-gcc48' => 'c++11'
+  depends_on 'WyseNynja/bitcoin/libwallet'
   depends_on 'WyseNynja/bitcoin/libbitcoin'
   depends_on 'WyseNynja/bitcoin/libconfig-gcc48'
   depends_on 'WyseNynja/bitcoin/zeromq2-gcc48'
@@ -33,12 +34,30 @@ class Sx < Formula
     ENV.append 'CPPFLAGS', "-I#{libconfiggcc48.include}"
     ENV.append 'LDFLAGS', "-L#{libconfiggcc48.lib}"
 
+    # I thought depends_on leveldb-gcc48 would be enough, but I guess not...
+    leveldbgcc48 = Formula.factory('WyseNynja/bitcoin/leveldb-gcc48')
+    ENV.append 'CPPFLAGS', "-I#{leveldbgcc48.include}"
+    ENV.append 'LDFLAGS', "-L#{leveldbgcc48.lib}"
+
     # I thought depends_on zermoq-gcc48 would be enough, but I guess not...
     zeromq2gcc48 = Formula.factory('WyseNynja/bitcoin/zeromq2-gcc48')
     ENV.append 'CPPFLAGS', "-I#{zeromq2gcc48.include}"
     ENV.append 'LDFLAGS', "-L#{zeromq2gcc48.lib}"
+    
+    libwallet = Formula.factory('WyseNynja/bitcoin/libwallet')
+    ENV.append 'libwallet_CFLAGS', "-I#{libwallet.include}"
+    ENV.append 'libwallet_LIBS', "-L#{libwallet.lib}"
+
+    libbitcoin = Formula.factory('WyseNynja/bitcoin/libbitcoin')
+    ENV.append 'libbitcoin_CFLAGS', "-I#{libbitcoin.include}"
+    ENV.append 'libbitcoin_LIBS', "-L#{libbitcoin.lib}"
+
+    ENV.append 'libbitcoin_LIBS', "-lbitcoin -lpthread -lleveldb -lcurl -lboost_thread-mt -lboost_regex -lboost_filesystem -lboost_system -lobelisk -lwallet"
+
+    ENV.cxx11
 
     system "autoreconf", "-i"
+
     system "./configure", "--prefix=#{prefix}",
                           "--disable-dependency-tracking",
                           "--sysconfdir=#{etc}"

@@ -2,7 +2,7 @@ require 'formula'
 
 class LibbitcoinTools < Formula
   homepage 'https://github.com/spesmilo/libbitcoin'
-  url 'https://github.com/spesmilo/libbitcoin.git', :tag => 'v1.4'
+  url 'https://github.com/spesmilo/libbitcoin.git', :tag => 'v2.0'
   head 'https://github.com/spesmilo/libbitcoin.git', :branch => 'master'
 
   depends_on 'homebrew/versions/gcc48' => :build
