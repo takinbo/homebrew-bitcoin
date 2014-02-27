@@ -132,9 +132,9 @@ index ba6cc45..45b2e7e 100755
 
 -include ./pypaths.txt
 +# include ./pypaths.txt
-+PYTHON_INCLUDE=/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/include/python2.7/
++PYTHON_INCLUDE=`python-config --prefix`/include/python2.7/
 +PYVER=python2.7
-+PYTHON_LIB=/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config/libpython2.7.a
++PYTHON_LIB=`python-config --prefix`/lib/python2.7/config/libpython2.7.a
 
  INCLUDE_OPTS += -Icryptopp -Ileveldb/include -DUSE_CRYPTOPP -D__STDC_LIMIT_MACROS
  LIBRARY_OPTS += -lpthread -Lleveldb -L$(PYTHON_LIB) -l$(PYVER)
