@@ -67,7 +67,13 @@ class Bitcoind < Formula
         <key>RunAtLoad</key>
         <true/>
         <key>KeepAlive</key>
-        <true/>
+        <dict>
+          <key>PathState</key>
+          <dict>
+            <key>~/Library/Application Support/Bitcoin/bitcoind.pid</key>
+            <false/>
+          </dict>
+        </dict>
         <key>ProgramArguments</key>
         <array>
           <string>#{opt_prefix}/bin/bitcoind</string>
