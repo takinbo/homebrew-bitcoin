@@ -19,7 +19,7 @@ Armory is having issues on OS X.  It seems to hang and crash after a few minutes
 
 ## bitcoind
 
-This formula currently has trouble on Mavericks.  You will have to install with `--HEAD` until the next bitcoind release (>0.8.6).
+This formula has been updated to install bitcoind and bitcoin-cli version 0.9.0.  Everything seems to work greak on Mavericks.
 
 ## bitcoind-next-test
 
