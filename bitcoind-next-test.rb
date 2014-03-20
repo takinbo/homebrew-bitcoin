@@ -4,6 +4,8 @@ class BitcoindNextTest < Formula
   homepage 'http://bitcoin.org/'
   head 'https://github.com/luke-jr/bitcoin.git', :branch => 'next-test'
 
+  keg_only "conflicts with WyseNynja/bitcoin/bitcoind"
+
   depends_on 'boost'
   depends_on 'berkeley-db4'
   depends_on 'miniupnpc' if build.include? 'with-upnp'
@@ -17,8 +19,7 @@ class BitcoindNextTest < Formula
         "DEPSDIR=#{HOMEBREW_PREFIX}",
         "USE_UPNP=#{(build.include? 'with-upnp') ? '1' : '-'}",
         "USE_IPV6=#{(build.include? 'without-ipv6') ? '-' : '1'}"
-      system "mv bitcoind bitcoind-next-test"
-      bin.install "bitcoind-next-test"
+      bin.install "bitcoind"
     end
   end
 
