@@ -2,23 +2,17 @@ require 'formula'
 
 class Bitcoind < Formula
   homepage 'http://bitcoin.org/'
-  head 'https://github.com/bitcoin/bitcoin.git'
-  url 'https://github.com/bitcoin/bitcoin.git', :tag => 'v0.8.6'
-  version '0.8.6'
+  url 'https://github.com/bitcoin/bitcoin.git', :tag => 'v0.9.0'
+  version '0.9.0'
+  head 'https://github.com/bitcoin/bitcoin.git', :branch => 'master'
 
-  head do
-    url 'https://github.com/bitcoin/bitcoin.git', :branch => 'master'
-    version 'master'
-
-    depends_on 'automake'
-    depends_on 'pkg-config'
-    depends_on 'protobuf'
-  end
-
+  depends_on 'automake'
   depends_on 'berkeley-db4'
   depends_on 'boost'
   depends_on 'miniupnpc' if build.include? 'with-upnp'
   depends_on 'openssl'
+  depends_on 'pkg-config'
+  depends_on 'protobuf'
 
   option 'with-coinpunk', 'Compile with patches for coinpunk'
   option 'with-upnp', 'Compile with UPnP support'
@@ -26,10 +20,6 @@ class Bitcoind < Formula
 
   def patches
     ps = []
-    unless build.head?
-      # fix include and lib paths for berkeley-db4 and openssl
-      ps << 'https://gist.github.com/WyseNynja/8120972/raw/a27bb93507f741c4f31f82514769c333a8243c1a/bdb4+and+openssl+paths+for+old+osx'
-    end
     if build.with? 'coinpunk'
       # merge patch equivalent of https://github.com/bitcoin/bitcoin/pull/3383
       ps << 'https://gist.github.com/WyseNynja/8120948/raw/f651429ca271b781dc4083d88f0a351e3f2c0688/patch+for+coinpunk'
@@ -38,22 +28,12 @@ class Bitcoind < Formula
   end
 
   def install
-    raise 'Bitcoind currently requires --HEAD on Mavericks' if MacOS.version == :mavericks and not build.head?
-
-    if build.head?
-      system "sh", "autogen.sh"
-      system "./configure", "--prefix=#{prefix}"
-      system "make"
-    else
-      cd "src" do
-        system "make", "-f", "makefile.osx",
-          "DEPSDIR=#{HOMEBREW_PREFIX}",
-          "USE_UPNP=#{(build.include? 'with-upnp') ? '1' : '-'}",
-          "USE_IPV6=#{(build.include? 'without-ipv6') ? '-' : '1'}"
-      end
-    end
-
+    system "sh", "autogen.sh"
+    system "./configure", "--prefix=#{prefix}"
+    system "make"
+    system "strip src/bitcoin-cli"
     system "strip src/bitcoind"
+    bin.install "src/bitcoin-cli"
     bin.install "src/bitcoind"
   end
 
