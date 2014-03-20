@@ -1,10 +1,9 @@
 require 'formula'
 
-class Bitcoind < Formula
+class BitcoindSipaWatchonly < Formula
   homepage 'http://bitcoin.org/'
-  url 'https://github.com/bitcoin/bitcoin.git', :tag => 'v0.9.0'
-  version '0.9.0'
-  head 'https://github.com/bitcoin/bitcoin.git', :branch => 'master'
+  url 'https://github.com/sipa/bitcoin.git', :branch => 'watchonly'
+  version '0.8.99.0'
 
   depends_on 'automake'
   depends_on 'berkeley-db4'
@@ -19,12 +18,10 @@ class Bitcoind < Formula
 
   def install
     system "sh", "autogen.sh"
-    # todo: make --without-qt optional
     system "./configure", "--prefix=#{prefix}", "--without-qt"
     system "make"
-    system "strip src/bitcoin-cli"
     system "strip src/bitcoind"
-    bin.install "src/bitcoin-cli"
+    #system "mv src/bitcoind src/bitcoind-sipa-watchonly"
     bin.install "src/bitcoind"
   end
 
@@ -47,7 +44,7 @@ class Bitcoind < Formula
         </dict>
         <key>ProgramArguments</key>
         <array>
-          <string>#{opt_prefix}/bin/bitcoind</string>
+          <string>#{opt_prefix}/bin/bitcoind-sipa-watchonly</string>
           <string>-daemon</string>
         </array>
       </dict>
@@ -55,26 +52,20 @@ class Bitcoind < Formula
     EOS
   end
 
-  def caveats
-    cs = [<<-EOS.undent
+  def caveats; <<-EOS.undent
       You will need to setup your bitcoin.conf if you haven't already done so:
 
       echo -e "rpcuser=bitcoinrpc\\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
       chmod 600 ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
 
       Use `bitcoind stop` to stop bitcoind if necessary! `brew services stop bitcoind` does not work!
-      EOS
-    ]
 
-    if build.with? 'coinpunk'
-      cs << <<-EOS.undent
-        You will also need to add a couple more options for coinpunk.
+      If you are using this for coinpunk, you will need to add a couple more options.
 
-        echo -e "txindex=1\\ntestnet=1" >> ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
-      EOS
-    end
+      echo -e "txindex=1\\ntestnet=1" >> ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
 
-    cs
+      You will probably need to "brew unlink bitcoind; brew link bitcoind-sipa-watchonly"
+    EOS
   end
 end
 
