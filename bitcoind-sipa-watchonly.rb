@@ -21,7 +21,6 @@ class BitcoindSipaWatchonly < Formula
     system "./configure", "--prefix=#{prefix}", "--without-qt"
     system "make"
     system "strip src/bitcoind"
-    #system "mv src/bitcoind src/bitcoind-sipa-watchonly"
     bin.install "src/bitcoind"
   end
 
