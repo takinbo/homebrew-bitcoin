@@ -29,7 +29,8 @@ class Bitcoind < Formula
 
   def install
     system "sh", "autogen.sh"
-    system "./configure", "--prefix=#{prefix}"
+    # todo: make --without-qt optional
+    system "./configure", "--prefix=#{prefix}", "--without-qt"
     system "make"
     system "strip src/bitcoin-cli"
     system "strip src/bitcoind"
