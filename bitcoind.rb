@@ -14,9 +14,6 @@ class Bitcoind < Formula
   depends_on 'pkg-config'
   depends_on 'protobuf'
 
-  option 'with-upnp', 'Compile with UPnP support'
-  option 'without-ipv6', 'Compile without IPv6 support'
-
   def install
     system "sh", "autogen.sh"
     # todo: make --without-qt optional
