@@ -55,26 +55,14 @@ class Bitcoind < Formula
     EOS
   end
 
-  def caveats
-    cs = [<<-EOS.undent
-      You will need to setup your bitcoin.conf if you haven't already done so:
+  def caveats; <<-EOS.undent
+    You will need to setup your bitcoin.conf if you haven't already done so:
 
-      echo -e "rpcuser=bitcoinrpc\\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
-      chmod 600 ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
+    echo -e "rpcuser=bitcoinrpc\\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
+    chmod 600 ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
 
-      Use `bitcoind stop` to stop bitcoind if necessary! `brew services stop bitcoind` does not work!
-      EOS
-    ]
-
-    if build.with? 'coinpunk'
-      cs << <<-EOS.undent
-        You will also need to add a couple more options for coinpunk.
-
-        echo -e "txindex=1\\ntestnet=1" >> ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
-      EOS
-    end
-
-    cs
+    Use `bitcoind stop` to stop bitcoind if necessary! `brew services stop bitcoind` does not work!
+    EOS
   end
 end
 
