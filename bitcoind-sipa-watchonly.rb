@@ -13,9 +13,6 @@ class BitcoindSipaWatchonly < Formula
   depends_on 'pkg-config'
   depends_on 'protobuf'
 
-  option 'with-upnp', 'Compile with UPnP support'
-  option 'without-ipv6', 'Compile without IPv6 support'
-
   def install
     system "sh", "autogen.sh"
     system "./configure", "--prefix=#{prefix}", "--without-qt"
@@ -43,7 +40,7 @@ class BitcoindSipaWatchonly < Formula
         </dict>
         <key>ProgramArguments</key>
         <array>
-          <string>#{opt_prefix}/bin/bitcoind-sipa-watchonly</string>
+          <string>#{opt_prefix}/bin/bitcoind</string>
           <string>-daemon</string>
         </array>
       </dict>
@@ -63,7 +60,7 @@ class BitcoindSipaWatchonly < Formula
 
       echo -e "txindex=1\\ntestnet=1" >> ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
 
-      You will probably need to "brew unlink bitcoind; brew link bitcoind-sipa-watchonly"
+      If you already have install bitcoind with brew, you will probably need to "brew unlink bitcoind; brew link bitcoind-sipa-watchonly"
     EOS
   end
 end
