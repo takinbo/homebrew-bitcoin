@@ -2,8 +2,8 @@ require 'formula'
 
 class Bitcoind < Formula
   homepage 'http://bitcoin.org/'
-  url 'https://github.com/bitcoin/bitcoin.git', :tag => 'v0.9.1'
-  version '0.9.1'
+  url 'https://github.com/bitcoin/bitcoin.git', :tag => 'v0.9.2'
+  version '0.9.2'
   head 'https://github.com/bitcoin/bitcoin.git', :branch => 'master'
 
   depends_on 'automake'
