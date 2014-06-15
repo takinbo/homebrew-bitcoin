@@ -19,7 +19,7 @@ Armory is having issues on OS X.  It seems to hang and crash after a few minutes
 
 ## bitcoind
 
-This formula has been updated to install bitcoind and bitcoin-cli version 0.9.1.  Everything seems to work greak on Mavericks.
+This formula has been updated to install bitcoind and bitcoin-cli version 0.9.2.  Everything seems to work greak on Mavericks.
 
 **IMPORTANT**: If you are upgrading, be sure to also upgrade openssl with `brew update; brew upgrade openssl`!
 
