@@ -19,7 +19,7 @@ Armory is having issues on OS X.  It seems to hang and crash after a few minutes
 
 ## bitcoind
 
-This formula has been updated to install bitcoind and bitcoin-cli version 0.9.2.  Everything seems to work greak on Mavericks.
+This formula has been updated to install bitcoind and bitcoin-cli version 0.10.0
 
 **IMPORTANT**: If you are upgrading, be sure to also upgrade openssl with `brew update; brew upgrade openssl`!
 
@@ -35,7 +35,7 @@ This is @sipa's branch with watch-only addresses.  This can be used for [coinpun
 
 These formula require GCC 4.8 which is newer than the compiler that comes with OS X (and comes from `brew tap homebrew/versions`).  Because of this, building these packages takes a while, but they seem to be working! Hard coding other versions of compilers into a formula like this is not supported by the brew developers, but I don't see any other way.
 
-I haven't done much testing yet, so things might still be broken, but the quick things I have played with seemed to work.  Please open an issue if you see anything wrong!  And don't use these packages for merchant purposes until they are fully tested.
+This formula are currently broken because they have rearranged their repos.
 
 ## Vanitygen
 
