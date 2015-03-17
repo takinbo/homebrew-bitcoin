@@ -2,12 +2,12 @@ require 'formula'
 
 class ArmoryQt < Formula
   homepage 'https://bitcoinarmory.com/'
-  url 'https://github.com/etotheipi/BitcoinArmory.git', :tag => 'v0.91.1'
-  version '0.91.1'
+  url 'https://github.com/etotheipi/BitcoinArmory.git', :tag => 'v0.93'
+  version '0.93'
 
   devel do
-    url 'https://github.com/etotheipi/BitcoinArmory.git', :branch => '0.91-dev'
-    version '0.91-dev'
+    url 'https://github.com/etotheipi/BitcoinArmory.git', :branch => 'dev'
+    version 'dev'
   end
 
   option 'codesign-app', 'Codesign ArmoryQt.app (untested)'
