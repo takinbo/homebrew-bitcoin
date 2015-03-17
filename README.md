@@ -23,10 +23,6 @@ This formula has been updated to install bitcoind and bitcoin-cli version 0.10.0
 
 **IMPORTANT**: If you are upgrading, be sure to also upgrade openssl with `brew update; brew upgrade openssl`!
 
-## bitcoind-sipa-watchonly
-
-This is @sipa's branch with watch-only addresses.  This can be used for [coinpunk](https://github.com/kyledrake/coinpunk/blob/master/docs/INSTALL-OSX.md).
-
 ## libbitcoin / Obelisk / sx
 
 These formula require GCC 4.8 which is newer than the compiler that comes with OS X (and comes from `brew tap homebrew/versions`).  Because of this, building these packages takes a while, but they seem to be working! Hard coding other versions of compilers into a formula like this is not supported by the brew developers, but I don't see any other way.
