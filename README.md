@@ -23,10 +23,6 @@ This formula has been updated to install bitcoind and bitcoin-cli version 0.10.0
 
 **IMPORTANT**: If you are upgrading, be sure to also upgrade openssl with `brew update; brew upgrade openssl`!
 
-## bitcoind-next-test
-
-This is @luke-jr's branch of things upcoming in the main bitcoind.  It currently does not work on Mavericks.  Stay tuned!
-
 ## bitcoind-sipa-watchonly
 
 This is @sipa's branch with watch-only addresses.  This can be used for [coinpunk](https://github.com/kyledrake/coinpunk/blob/master/docs/INSTALL-OSX.md).
