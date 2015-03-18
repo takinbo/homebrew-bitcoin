@@ -17,12 +17,18 @@ class Bitcoind < Formula
   depends_on "miniupnpc" => :optional
   deprecated_option "with-upnp" => "with-miniupnpc"
 
+  option "with-gui", "Build GUI client (requires Qt)"
+  if build.with? "gui"
+    depends_on "qt"
+    depends_on "protobuf"
+    depends_on "libqrencode"
+  end
+
   option "without-check", "Disable build-time checking"
 
   def install
     system "sh", "autogen.sh"
-    # todo: make --without-qt optional
-    system "./configure", "--prefix=#{prefix}", "--without-qt"
+    system "./configure", "--prefix=#{prefix}"
     system "make"
     system "make", "check" if build.with? "check"
 
@@ -30,6 +36,11 @@ class Bitcoind < Formula
     system "strip src/bitcoind"
     bin.install "src/bitcoin-cli"
     bin.install "src/bitcoind"
+
+    if build.with? "gui"
+      system "strip", "src/qt/bitcoin-qt"
+      bin.install "src/qt/bitcoin-qt"
+    end
   end
 
   def plist; <<-EOS.undent
