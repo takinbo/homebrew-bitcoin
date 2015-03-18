@@ -1,18 +1,15 @@
-require 'formula'
-
 class Bitcoind < Formula
-  homepage 'https://bitcoin.org/'
-  url 'https://github.com/bitcoin/bitcoin.git', :tag => 'v0.10.0'
-  version '0.10.0'
-  head 'https://github.com/bitcoin/bitcoin.git', :branch => 'master'
+  homepage "https://bitcoin.org/"
+  url "https://github.com/bitcoin/bitcoin.git", :tag => "v0.10.0"
+  head "https://github.com/bitcoin/bitcoin.git", :branch => "master"
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "pkg-config" => :build
-  depends_on 'berkeley-db4'
-  depends_on 'boost'
-  depends_on 'openssl'
+  depends_on "berkeley-db4"
+  depends_on "boost"
+  depends_on "openssl"
 
   depends_on "miniupnpc" => :optional
   deprecated_option "with-upnp" => "with-miniupnpc"
@@ -93,5 +90,3 @@ class Bitcoind < Formula
     EOS
   end
 end
-
-__END__
