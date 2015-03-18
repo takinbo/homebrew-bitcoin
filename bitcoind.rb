@@ -6,13 +6,14 @@ class Bitcoind < Formula
   version '0.10.0'
   head 'https://github.com/bitcoin/bitcoin.git', :branch => 'master'
 
-  depends_on 'automake'
+  depends_on "autoconf" => :build
+  depends_on "automake" => :build
+  depends_on "libtool" => :build
+  depends_on "pkg-config" => :build
   depends_on 'berkeley-db4'
   depends_on 'boost'
   depends_on 'miniupnpc' if build.include? 'with-upnp'
   depends_on 'openssl'
-  depends_on 'pkg-config'
-  depends_on 'protobuf'
 
   def install
     system "sh", "autogen.sh"
