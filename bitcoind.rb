@@ -12,8 +12,10 @@ class Bitcoind < Formula
   depends_on "pkg-config" => :build
   depends_on 'berkeley-db4'
   depends_on 'boost'
-  depends_on 'miniupnpc' if build.include? 'with-upnp'
   depends_on 'openssl'
+
+  depends_on "miniupnpc" => :optional
+  deprecated_option "with-upnp" => "with-miniupnpc"
 
   def install
     system "sh", "autogen.sh"
