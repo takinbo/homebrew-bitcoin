@@ -17,11 +17,15 @@ class Bitcoind < Formula
   depends_on "miniupnpc" => :optional
   deprecated_option "with-upnp" => "with-miniupnpc"
 
+  option "without-check", "Disable build-time checking"
+
   def install
     system "sh", "autogen.sh"
     # todo: make --without-qt optional
     system "./configure", "--prefix=#{prefix}", "--without-qt"
     system "make"
+    system "make", "check" if build.with? "check"
+
     system "strip src/bitcoin-cli"
     system "strip src/bitcoind"
     bin.install "src/bitcoin-cli"
