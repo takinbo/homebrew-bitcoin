@@ -17,6 +17,8 @@ class Bitcoind < Formula
   depends_on "miniupnpc" => :optional
   deprecated_option "with-upnp" => "with-miniupnpc"
 
+  option "without-utils", "Build without utilities (bitcoin-cli & bitcoin-tx)"
+
   option "with-gui", "Build GUI client (requires Qt)"
   if build.with? "gui"
     depends_on "qt"
@@ -31,16 +33,20 @@ class Bitcoind < Formula
 
     args = []
     args << "--without-miniupnpc" if build.without? "miniupnpc"
+    args << "--without-utils" if build.without? "utils"
     args << "--without-gui" if build.without? "gui"
     system "./configure", "--prefix=#{prefix}", *args
 
     system "make"
     system "make", "check" if build.with? "check"
 
-    system "strip src/bitcoin-cli"
-    system "strip src/bitcoind"
-    bin.install "src/bitcoin-cli"
+    system "strip", "src/bitcoind"
     bin.install "src/bitcoind"
+
+    if build.with? "utils"
+      system "strip", "src/bitcoin-cli", "src/bitcoin-tx"
+      bin.install "src/bitcoin-cli", "src/bitcoin-tx"
+    end
 
     if build.with? "gui"
       system "strip", "src/qt/bitcoin-qt"
