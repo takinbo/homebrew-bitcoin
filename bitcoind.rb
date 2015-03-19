@@ -28,7 +28,12 @@ class Bitcoind < Formula
 
   def install
     system "sh", "autogen.sh"
-    system "./configure", "--prefix=#{prefix}"
+
+    args = []
+    args << "--without-miniupnpc" if build.without? "miniupnpc"
+    args << "--without-gui" if build.without? "gui"
+    system "./configure", "--prefix=#{prefix}", *args
+
     system "make"
     system "make", "check" if build.with? "check"
 
