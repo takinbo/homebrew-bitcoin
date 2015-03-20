@@ -29,7 +29,7 @@ class Bitcoind < Formula
   option "without-check", "Disable build-time checking"
 
   def install
-    system "sh", "autogen.sh"
+    system "./autogen.sh"
 
     args = []
     args << "--without-miniupnpc" if build.without? "miniupnpc"
@@ -40,17 +40,19 @@ class Bitcoind < Formula
     system "make"
     system "make", "check" if build.with? "check"
 
-    system "strip", "src/bitcoind"
-    bin.install "src/bitcoind"
+    cd "src" do
+      system "strip", "bitcoind"
+      bin.install "bitcoind"
 
-    if build.with? "utils"
-      system "strip", "src/bitcoin-cli", "src/bitcoin-tx"
-      bin.install "src/bitcoin-cli", "src/bitcoin-tx"
-    end
+      if build.with? "utils"
+        system "strip", "bitcoin-cli", "bitcoin-tx"
+        bin.install "bitcoin-cli", "bitcoin-tx"
+      end
 
-    if build.with? "gui"
-      system "strip", "src/qt/bitcoin-qt"
-      bin.install "src/qt/bitcoin-qt"
+      if build.with? "gui"
+        system "strip", "qt/bitcoin-qt"
+        bin.install "qt/bitcoin-qt"
+      end
     end
   end
 
