@@ -1,28 +1,56 @@
-require 'formula'
-
 class Bitcoind < Formula
-  homepage 'https://bitcoin.org/'
-  url 'https://github.com/bitcoin/bitcoin.git', :tag => 'v0.10.0'
-  version '0.10.0'
-  head 'https://github.com/bitcoin/bitcoin.git', :branch => 'master'
+  homepage "https://bitcoin.org/"
+  url "https://github.com/bitcoin/bitcoin.git", :tag => "v0.10.0"
+  head "https://github.com/bitcoin/bitcoin.git", :branch => "master"
 
-  depends_on 'automake'
-  depends_on 'berkeley-db4'
-  depends_on 'boost'
-  depends_on 'miniupnpc' if build.include? 'with-upnp'
-  depends_on 'openssl'
-  depends_on 'pkg-config'
-  depends_on 'protobuf'
+  depends_on "autoconf" => :build
+  depends_on "automake" => :build
+  depends_on "libtool" => :build
+  depends_on "pkg-config" => :build
+  depends_on "berkeley-db4"
+  depends_on "boost"
+  depends_on "openssl"
+
+  depends_on "miniupnpc" => :optional
+  deprecated_option "with-upnp" => "with-miniupnpc"
+
+  option "without-utils", "Build without utilities (bitcoin-cli & bitcoin-tx)"
+
+  option "with-gui", "Build GUI client (requires Qt)"
+  if build.with? "gui"
+    depends_on "qt"
+    depends_on "protobuf"
+    depends_on "libqrencode"
+  end
+
+  option "without-check", "Disable build-time checking"
 
   def install
-    system "sh", "autogen.sh"
-    # todo: make --without-qt optional
-    system "./configure", "--prefix=#{prefix}", "--without-qt"
+    system "./autogen.sh"
+
+    args = []
+    args << "--without-miniupnpc" if build.without? "miniupnpc"
+    args << "--without-utils" if build.without? "utils"
+    args << "--without-gui" if build.without? "gui"
+    system "./configure", "--prefix=#{prefix}", *args
+
     system "make"
-    system "strip src/bitcoin-cli"
-    system "strip src/bitcoind"
-    bin.install "src/bitcoin-cli"
-    bin.install "src/bitcoind"
+    system "make", "check" if build.with? "check"
+
+    cd "src" do
+      system "strip", "bitcoind"
+      bin.install "bitcoind"
+
+      if build.with? "utils"
+        system "strip", "bitcoin-cli", "bitcoin-tx"
+        bin.install "bitcoin-cli", "bitcoin-tx"
+      end
+
+      if build.with? "gui"
+        system "strip", "qt/bitcoin-qt"
+        bin.install "qt/bitcoin-qt"
+      end
+    end
   end
 
   def plist; <<-EOS.undent
@@ -62,5 +90,3 @@ class Bitcoind < Formula
     EOS
   end
 end
-
-__END__
