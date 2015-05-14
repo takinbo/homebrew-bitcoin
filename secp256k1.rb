@@ -1,6 +1,6 @@
 class Secp256k1  < Formula
   homepage "https://github.com/bitcoin/secp256k1"
-  head "https://github.com/bitcoin/secp256k1.git", :revision => "3087bc4d75ec17287e71a36bda5df52a9ab8d854"
+  head "https://github.com/bitcoin/secp256k1.git", :revision => "729badff148a00aebedce663e4ebb5a039170d9b"
 
   depends_on "automake" => :build
   depends_on "autoconf" => :build
