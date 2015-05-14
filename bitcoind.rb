@@ -1,6 +1,6 @@
 class Bitcoind < Formula
   homepage "https://bitcoin.org/"
-  url "https://github.com/bitcoin/bitcoin.git", :tag => "v0.10.0"
+  url "https://github.com/bitcoin/bitcoin.git", :tag => "v0.10.1"
   head "https://github.com/bitcoin/bitcoin.git", :branch => "master"
 
   depends_on "autoconf" => :build
@@ -20,7 +20,7 @@ class Bitcoind < Formula
   if build.with? "gui"
     depends_on "qt"
     depends_on "protobuf"
-    depends_on "libqrencode"
+    depends_on "qrencode"
   end
 
   option "without-check", "Disable build-time checking"
