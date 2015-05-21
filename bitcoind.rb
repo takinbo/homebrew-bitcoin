@@ -1,6 +1,6 @@
 class Bitcoind < Formula
   homepage "https://bitcoin.org/"
-  url "https://github.com/bitcoin/bitcoin.git", :tag => "v0.10.1"
+  url "https://github.com/bitcoin/bitcoin.git", :tag => "v0.10.2"
   head "https://github.com/bitcoin/bitcoin.git", :branch => "master"
 
   depends_on "autoconf" => :build
