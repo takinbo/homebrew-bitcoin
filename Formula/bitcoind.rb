@@ -12,6 +12,7 @@ class Bitcoind < Formula
 
   option "with-gui", "Build the GUI client (requires Qt5)"
 
+  depends_on :macos => :lion
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
