@@ -1,92 +1,50 @@
 class Bitcoind < Formula
+  desc "A decentralized, peer to peer payment network"
   homepage "https://bitcoin.org/"
-  url "https://github.com/bitcoin/bitcoin.git", :tag => "v0.10.2"
-  head "https://github.com/bitcoin/bitcoin.git", :branch => "master"
+  url "https://github.com/bitcoin/bitcoin/archive/v0.11.0.tar.gz"
+  sha256 "2bcd61a4c288e5cc5d7fbe724606c610a20037332b06f7a9e99c1153eef73aef"
+  
+  head do
+    url "https://github.com/bitcoin/bitcoin.git"
+    
+    depends_on "libevent"
+  end
+
+  option "with-gui", "Build the GUI client (requires Qt5)"
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "pkg-config" => :build
+  depends_on :xcode => :build
   depends_on "berkeley-db4"
   depends_on "boost"
   depends_on "openssl"
+  depends_on "miniupnpc" => :recommended
 
-  depends_on "miniupnpc" => :optional
-  deprecated_option "with-upnp" => "with-miniupnpc"
-
-  option "without-utils", "Build without utilities (bitcoin-cli & bitcoin-tx)"
-
-  option "with-gui", "Build GUI client (requires Qt)"
   if build.with? "gui"
-    depends_on "qt"
+    depends_on "qt5"
     depends_on "protobuf"
     depends_on "qrencode"
+    depends_on "gettext" => :recommended
   end
-
-  option "without-check", "Disable build-time checking"
 
   def install
-    system "./autogen.sh"
+    args = ["--prefix=#{libexec}", "--disable-dependency-tracking"]
 
-    args = []
+    if build.with? "gui"
+      args << "--with-qrencode"
+      args << "--with-gui=qt5"
+    end
+
     args << "--without-miniupnpc" if build.without? "miniupnpc"
-    args << "--without-utils" if build.without? "utils"
-    args << "--without-gui" if build.without? "gui"
-    system "./configure", "--prefix=#{prefix}", *args
+
+    system "./autogen.sh"
+    system "./configure", *args
 
     system "make"
-    system "make", "check" if build.with? "check"
-
-    cd "src" do
-      system "strip", "bitcoind"
-      bin.install "bitcoind"
-
-      if build.with? "utils"
-        system "strip", "bitcoin-cli", "bitcoin-tx"
-        bin.install "bitcoin-cli", "bitcoin-tx"
-      end
-
-      if build.with? "gui"
-        system "strip", "qt/bitcoin-qt"
-        bin.install "qt/bitcoin-qt"
-      end
-    end
-  end
-
-  def plist; <<-EOS.undent
-    <?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    <plist version="1.0">
-      <dict>
-        <key>Label</key>
-        <string>#{plist_name}</string>
-        <key>RunAtLoad</key>
-        <true/>
-        <key>KeepAlive</key>
-        <dict>
-          <key>PathState</key>
-          <dict>
-            <key>~/Library/Application Support/Bitcoin/bitcoind.pid</key>
-            <false/>
-          </dict>
-        </dict>
-        <key>ProgramArguments</key>
-        <array>
-          <string>#{opt_prefix}/bin/bitcoind</string>
-          <string>-daemon</string>
-        </array>
-      </dict>
-    </plist>
-    EOS
-  end
-
-  def caveats; <<-EOS.undent
-    You will need to setup your bitcoin.conf if you haven't already done so:
-
-    echo -e "rpcuser=bitcoinrpc\\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
-    chmod 600 ~/Library/Application\\ Support/Bitcoin/bitcoin.conf
-
-    Use `bitcoind stop` to stop bitcoind if necessary! `brew services stop bitcoind` does not work!
-    EOS
+    system "make", "check"
+    system "make", "install"
+    bin.write_exec_script Dir["#{libexec}/bin/*"]
   end
 end
