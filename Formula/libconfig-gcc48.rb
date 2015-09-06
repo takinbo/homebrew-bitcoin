@@ -1,5 +1,3 @@
-require 'formula'
-
 class LibconfigGcc48 < Formula
   homepage 'http://www.hyperrealm.com/libconfig/'
   url 'http://www.hyperrealm.com/libconfig/libconfig-1.4.9.tar.gz'

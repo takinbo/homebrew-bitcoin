@@ -1,5 +1,3 @@
-require 'formula'
-
 class Sx < Formula
   homepage 'https://github.com/spesmilo/sx'
   url 'https://github.com/spesmilo/sx.git', :tag => 'v1.0'

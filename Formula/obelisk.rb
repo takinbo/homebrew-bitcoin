@@ -1,5 +1,3 @@
-require 'formula'
-
 class Obelisk < Formula
   homepage 'https://github.com/spesmilo/obelisk'
   url 'https://github.com/spesmilo/obelisk.git', :tag => 'v1.0'

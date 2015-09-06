@@ -1,5 +1,3 @@
-require 'formula'
-
 class LibbitcoinExamples < Formula
   homepage 'https://github.com/spesmilo/libbitcoin'
   url 'https://github.com/spesmilo/libbitcoin.git', :tag => 'v1.4'

@@ -1,5 +1,3 @@
-require 'formula'
-
 class Libbitcoin < Formula
   homepage 'https://github.com/libbitcoin/libwallet'
   url 'https://github.com/libbitcoin/libwallet.git', :tag => 'v2.0'

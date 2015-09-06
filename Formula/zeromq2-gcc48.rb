@@ -1,5 +1,3 @@
-require 'formula'
-
 class Zeromq2Gcc48 < Formula
   homepage 'http://www.zeromq.org/'
   url 'http://download.zeromq.org/zeromq-2.2.0.tar.gz'

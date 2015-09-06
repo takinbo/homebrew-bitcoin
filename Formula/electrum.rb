@@ -1,5 +1,3 @@
-require 'formula'
-
 class Electrum < Formula
   homepage 'http://electrum.org/'
   url 'https://github.com/spesmilo/electrum.git', :tag => '1.9.8'

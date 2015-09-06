@@ -1,5 +1,3 @@
-require 'formula'
-
 class Vanitygen < Formula
   homepage 'https://github.com/WyseNynja/vanitygen'
   head 'https://github.com/WyseNynja/vanitygen.git'
