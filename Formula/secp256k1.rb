@@ -1,4 +1,5 @@
 class Secp256k1  < Formula
+  desc "Optimized C library for EC operations on curve secp256k1"
   homepage "https://github.com/bitcoin/secp256k1"
   head "https://github.com/bitcoin/secp256k1.git", :revision => "85e3a2cc087993973a2195849c652005b0be7ddd"
 
