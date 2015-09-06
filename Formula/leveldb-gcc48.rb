@@ -1,5 +1,3 @@
-require 'formula'
-
 class LeveldbGcc48 < Formula
   homepage 'https://code.google.com/p/leveldb/'
   url 'https://leveldb.googlecode.com/files/leveldb-1.14.0.tar.gz'

@@ -1,5 +1,3 @@
-require 'formula'
-
 class Libwallet < Formula
   homepage 'https://github.com/spesmilo/libwallet'
   url 'https://github.com/spesmilo/libwallet.git', :tag => 'v0.4'

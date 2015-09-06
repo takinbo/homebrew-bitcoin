@@ -1,14 +1,11 @@
-require 'formula'
-
-class LibbitcoinExamples < Formula
+class LibbitcoinTools < Formula
   homepage 'https://github.com/spesmilo/libbitcoin'
-  url 'https://github.com/spesmilo/libbitcoin.git', :tag => 'v1.4'
+  url 'https://github.com/spesmilo/libbitcoin.git', :tag => 'v2.0'
   head 'https://github.com/spesmilo/libbitcoin.git', :branch => 'master'
 
   depends_on 'homebrew/versions/gcc48' => :build
   depends_on 'pkg-config' => :build
 
-  depends_on 'watch' => :recommended
   depends_on 'WyseNynja/bitcoin/libbitcoin'
 
   def install
@@ -17,21 +14,10 @@ class LibbitcoinExamples < Formula
     ENV['CXX'] = ENV['LD'] = "g++-4.8"
     ENV.cxx11
 
-    cd "examples" do
+    cd "tools" do
       system "make"
       for script in [
-        "accept",
-        "balance",
-        "blocks.sh",
-        "connect",
-        "determ",
-        "display-last",
-        "fullnode",
-        "initchain",
-        "priv",
-        "proto",
-        "satoshiwords",
-        "txrad",
+        "bootstrap",
       ] do
         system "mv", script, "bitcoin-"+script
         bin.install "bitcoin-"+script

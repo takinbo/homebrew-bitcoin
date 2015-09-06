@@ -1,5 +1,3 @@
-require 'formula'
-
 class ArmoryQt < Formula
   homepage 'https://bitcoinarmory.com/'
   url 'https://github.com/etotheipi/BitcoinArmory.git', :tag => 'v0.93'
