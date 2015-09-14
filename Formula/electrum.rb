@@ -1,8 +1,8 @@
 class Electrum < Formula
   desc "Lightweight bitcoin wallet"
   homepage "https://electrum.org/"
-  url "https://github.com/spesmilo/electrum/archive/2.4.3.tar.gz"
-  sha256 "0564054651f81d53985ecc2e4e902e0a4a5fcbbabb6b716a2d0f474371a920b7"
+  url "https://download.electrum.org/Electrum-2.4.4.tar.gz"
+  sha256 "b3cb84fbbce934dc1988321307de98f926b817ac84cbbafdc6d4df11038dc98e"
 
   head "https://github.com/spesmilo/electrum.git"
 
