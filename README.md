@@ -1,6 +1,9 @@
 This repository contains WyseNynja's UNOFFICIAL brews relating to bitcoin.
 
-These brews can be installed via the raw GitHub URLs, or by cloning this repository locally with `brew tap WyseNynja/bitcoin`.
+These brews can be installed via the raw GitHub URLs, or by tapping this repo.
+```
+brew tap WyseNynja/bitcoin
+```
 
 If you'd like a formula added to this repo, please create an issue!.
 
