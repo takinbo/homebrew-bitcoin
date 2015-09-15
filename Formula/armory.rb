@@ -1,66 +1,80 @@
-class ArmoryQt < Formula
-  homepage 'https://bitcoinarmory.com/'
-  url 'https://github.com/etotheipi/BitcoinArmory.git', :tag => 'v0.93'
-  version '0.93'
+class Armory < Formula
+  desc "Bitcoin wallet with cold storage and multisig support"
+  homepage "https://bitcoinarmory.com/"
+  url 'https://github.com/etotheipi/BitcoinArmory.git', :tag => 'v0.93.2'
+  version '0.93.2'
 
   devel do
-    url 'https://github.com/etotheipi/BitcoinArmory.git', :branch => 'dev'
-    version 'dev'
+    url "https://github.com/etotheipi/BitcoinArmory.git", :branch => "gitian-ffreeze"
+    version "dev"
   end
 
-  option 'codesign-app', 'Codesign ArmoryQt.app (untested)'
-  option 'with-app', 'Build ArmoryQt.app (untested)'
+  option "codesign-app", "Codesign ArmoryQt.app (untested)"
+  option "with-app", "Build ArmoryQt.app (untested)"
 
-  depends_on 'cryptopp'
-  depends_on 'libpng'
-  depends_on :python => 'psutil' if build.without? 'app'
-  depends_on 'pyqt'
-  depends_on :python
-  depends_on 'sip'
-  depends_on 'swig'
-  depends_on :python => 'twisted' if build.without? 'app'
-  depends_on :xcode if build.include? 'codesign-app'
-
+  depends_on "cryptopp"
+  depends_on "gettext"
   # brew uses it's own PATH during installs, so a custom installed gpg (like from GPGTools) won't be found
-  depends_on 'gpg' => :recommended
+  depends_on "gpg" => :recommended
+  depends_on "libpng"
+  depends_on :python
+  depends_on :python => "twisted" if build.without? "app"
+  depends_on :python => "psutil" if build.without? "app"
+  depends_on "pyqt"
+  depends_on "sip"
+  depends_on "swig"
+  depends_on :xcode if build.include? "codesign-app"
+  depends_on "xz"
 
   def patches
     DATA
   end
 
   def install
-    if not build.devel? and not build.head? and not build.without? 'gpg'
+    if not build.devel? and not build.head? and not build.without? "gpg"
       cd "#{cached_download}" do
         # prefix version with a "v" to match tags
         system "git verify-tag v#{version}"
       end
     end
 
-    ENV.j1  # if your formula's build system can't parallelize
+    ENV.deparallelize
 
-    if build.with? 'app'
+    if build.with? "app"
       system "make osx"
       cd "osxbuild" do
         prefix.install "Armory.app"
       end
     else
       system "make"
-      # todo: these directories change with v0.90
       system "mkdir -p #{share}/armory/img"
       system "mkdir -p #{share}/armory/extras"
-      system "mkdir -p #{share}/armory/jsonrpc"
-      system "mkdir -p #{share}/armory/dialogs"
-      system "cp *.py *.so README LICENSE #{share}/armory/"
-      system "cp img/* #{share}/armory/img"
+      system "mkdir -p #{share}/armory/bitcoinrpc_jsonrpc"
+      system "mkdir -p #{share}/armory/txjsonrpc"
+      system "mkdir -p #{share}/armory/txjsonrpc/web"
+      system "mkdir -p #{share}/armory/ui"
+      system "mkdir -p #{share}/armory/pytest"
+      system "mkdir -p #{share}/armory/BitTornado/BT1"
+      system "mkdir -p #{share}/armory/urllib3"
+      system "cp *.py *.so README.md LICENSE #{share}/armory/"
+      system "rsync -rupE armoryengine #{share}/armory/"
+      system "rsync -rupE --exclude='img/.DS_Store' img #{share}/armory"
       system "cp extras/*.py #{share}/armory/extras"
-      system "cp jsonrpc/*.py #{share}/armory/jsonrpc"
-      system "cp dialogs/*.py #{share}/armory/dialogs"
+      system "cp bitcoinrpc_jsonrpc/*.py #{share}/armory/bitcoinrpc_jsonrpc"
+      system "cp -r txjsonrpc/*.py #{share}/armory/txjsonrpc"
+      system "cp -r txjsonrpc/web/*.py #{share}/armory/txjsonrpc/web"
+      system "cp ui/*.py #{share}/armory/ui"
+      system "cp pytest/*.py #{share}/armory/pytest"
+      system "cp -r urllib3/*.py #{share}/armory/urllib3"
+      system "cp BitTornado/*.py #{share}/armory/BitTornado"
+      system "cp BitTornado/BT1/*.py #{share}/armory/BitTornado/BT1"
+      system "cp default_bootstrap.torrent #{prefix}/armory"
       bin.install 'ArmoryQt.command'
     end
   end
 
   def caveats
-    if build.with? 'app'
+    if build.with? "app"
       <<-EOS
       ArmoryQt.app was installed in:
         #{prefix}
@@ -68,7 +82,7 @@ class ArmoryQt < Formula
       To symlink into ~/Applications, you can do:
         brew linkapps
 
-      You will need bitcoin-qt or bitcoind running if you want to go online.
+      You will need Bitcoin-Core or bitcoind running if you want to go online.
       EOS
     else
       <<-EOS.undent
@@ -80,7 +94,7 @@ class ArmoryQt < Formula
 
       Or you can just run 'ArmoryQt.command' from your terminal
 
-      You will need bitcoin-qt or bitcoind running if you want to go online.
+      You will need Bitcoin-Core or bitcoind running if you want to go online.
       EOS
     end
   end
