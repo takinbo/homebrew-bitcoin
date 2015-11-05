@@ -1,13 +1,8 @@
 class Armory < Formula
   desc "Bitcoin wallet with cold storage and multisig support"
   homepage "https://bitcoinarmory.com/"
-  url 'https://github.com/etotheipi/BitcoinArmory.git', :tag => 'v0.93.2'
-  version '0.93.2'
-
-  devel do
-    url "https://github.com/etotheipi/BitcoinArmory.git", :branch => "gitian-ffreeze"
-    version "dev"
-  end
+  url 'https://github.com/etotheipi/BitcoinArmory.git', :tag => 'v0.93.3'
+  version '0.93.3'
 
   option "codesign-app", "Codesign ArmoryQt.app (untested)"
   option "with-app", "Build ArmoryQt.app (untested)"
