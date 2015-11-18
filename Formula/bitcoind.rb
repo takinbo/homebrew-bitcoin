@@ -1,8 +1,8 @@
 class Bitcoind < Formula
   desc "A decentralized, peer to peer payment network"
   homepage "https://bitcoin.org/"
-  url "https://github.com/bitcoin/bitcoin/archive/v0.11.1.tar.gz"
-  sha256 "6b238ab46bb10c7a83237dfd69b09c95f08043bbe0b478f9c256b9536186b8d2"
+  url "https://github.com/bitcoin/bitcoin/archive/v0.11.2.tar.gz"
+  sha256 "aab2cd0c4f045970d259cf9fcee5785b43180d20ccbbedc1f90480e697696b25"
   
   head do
     url "https://github.com/bitcoin/bitcoin.git"
@@ -35,7 +35,6 @@ class Bitcoind < Formula
 
     if build.with? "gui"
       args << "--with-qrencode"
-      args << "--with-gui=qt5"
     end
 
     args << "--without-miniupnpc" if build.without? "miniupnpc"
@@ -44,7 +43,6 @@ class Bitcoind < Formula
     system "./configure", *args
 
     system "make"
-    system "make", "check"
     system "make", "install"
     bin.write_exec_script Dir["#{libexec}/bin/*"]
   end
