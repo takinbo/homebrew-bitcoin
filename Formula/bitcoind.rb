@@ -3,10 +3,10 @@ class Bitcoind < Formula
   homepage "https://bitcoin.org/"
   url "https://github.com/bitcoin/bitcoin/archive/v0.11.2.tar.gz"
   sha256 "aab2cd0c4f045970d259cf9fcee5785b43180d20ccbbedc1f90480e697696b25"
-  
+
   head do
     url "https://github.com/bitcoin/bitcoin.git"
-    
+
     depends_on "libevent"
   end
 
